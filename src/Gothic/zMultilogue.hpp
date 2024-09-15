@@ -76,6 +76,8 @@ namespace GOTHIC_NAMESPACE
             AddNpc(player);
             running = true;
             log->Info("Starting multilogue with {0} NPCs.", npcs.size());
+
+            Npc_FakeTalkState(GetSelfInstance());
         }
     }
 
@@ -159,6 +161,8 @@ namespace GOTHIC_NAMESPACE
             msg->flag = npc->idx;
             player->GetEM()->OnMessage(msg, player);
             parser->SetInstance("SELF", lastSelf);
+
+            Npc_FakeTalkState(npc);
         }
     }
 

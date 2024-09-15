@@ -50,4 +50,12 @@ namespace GOTHIC_NAMESPACE
     }
 
 
+    void Npc_FakeTalkState(oCNpc* npc) {
+        if (npc) {
+            npc->state.curState.valid = 1;
+            npc->state.curState.index = parser->GetIndex("ZS_TALK");
+            npc->state.curState.name = parser->GetSymbol("ZS_TALK")->name;
+        }
+    }
+
 };
