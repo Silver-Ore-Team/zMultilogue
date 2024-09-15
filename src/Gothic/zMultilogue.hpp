@@ -18,16 +18,20 @@ namespace GOTHIC_NAMESPACE
         void ListNpcs();
         void MakeSelf(oCNpc* npc);
         void Wait (oCNpc* npc);
+        bool IsRunning() { return running; }
+        zCMultilogueCameraAdapter* GetCameraAdapter() { return cameraAdapter; }
+        void EV_Finish();
+        void EV_Next(int id);
     };
 
     zCMultilogue::zCMultilogue()
     {
-        // cameraAdapter =
+        cameraAdapter = new zCMultilogueCameraAdapter();
     }
 
     zCMultilogue::~zCMultilogue()
     {
-        // delete cameraAdapter;
+        delete cameraAdapter;
     }
 
     void zCMultilogue::AddNpc(oCNpc* npc)
@@ -37,12 +41,12 @@ namespace GOTHIC_NAMESPACE
             if (npcs.contains(npc->idx)) {
                 log->Warning("NPC with ID {0} already exists.", npc->idx);
             } else {
-                // if (Npc_IsInActiveVoblist(npc)) {
-                //     npc->ClearEM();
-                // }
-                // oCNpc* slef = GetSelfInstance();
-                // npc->state.StartAIState("ZS_MULTILOGUE", 0, 0, 0, 0);
-                // parser->SetInstance("SELF", slef);
+                if (Npc_IsInActiveVoblist(npc)) {
+                    npc->ClearEM();
+                }
+                oCNpc* self = GetSelfInstance();
+                npc->state.StartAIState("ZS_MULTILOGUE", 0, 0, 0, 0);
+                parser->SetInstance("SELF", self);
                 npcs[npc->idx] = npc;
             }
             // comment later
@@ -83,14 +87,13 @@ namespace GOTHIC_NAMESPACE
             return;
         }
         else {
-            // log->Info("Finishing multilogue with {0} NPCs.", npcs.size());
-            // oCInformationManager informatonManager = oCInformationManager::GetInformationManager();
+            // static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
             // if (!ogame->infoman)    { return; }
-            // if (!informatonManager.Npc) { return; }
-            // if (!informatonManager.Player) { return; }
+            // if (!mgrInfos.Npc) { return; }
+            // if (!mgrInfos.Player) { return; }
             //
-            // oCNpc* slf = informatonManager.Npc;
-            // oCNpc* oth = informatonManager.Player;
+            // oCNpc* slf = mgrInfos.Npc;
+            // oCNpc* oth = mgrInfos.Player;
             //
             // AI_WaitTillEnd(slf, oth);
             // AI_WaitTillEnd(oth, slf);
@@ -98,49 +101,77 @@ namespace GOTHIC_NAMESPACE
             // Wait (slf);
             // Wait (oth);
 
-            //Event Finish
+            oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
+            msg->slot = "EV_FINISH";
+            player->GetEM()->OnMessage(msg, player);
         }
+    }
+
+    void zCMultilogue::EV_Finish() {
+        if (!running) {
+            return;
+        }
+        static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Finish");
+        running = false;
+        log->Info("Finishing multilogue with {0} NPCs.", npcs.size());
+        return;
     }
 
     inline void zCMultilogue::ListNpcs() {
         static NH::Logger* log = NH::CreateLogger("zCMultilogue::ListNpcs");
+        log->Info("Listing NPCs:");
         for (auto& [key, value] : npcs) {
             log->Info("NPC ID: {0}", key);
         }
     }
 
-    // void zCMultilogue::Wait(oCNpc* npc)
-    // {
-    //
-    //     AI_WaitTillEnd(lastSelf, npc);
-    //     AI_WaitTillEnd(npc, lastSelf);
-    //
-    //     //Sync hero with new npc & npc with hero
-    //     AI_WaitTillEnd(player, npc);
-    //     AI_WaitTillEnd(npc, player);
-    //
-    //     //Sync all Npcs invited to trialogue
-    //     oCNpc* lastNpc;
-    //     oCNpc* nextNpc;
-    //
-    //     lastNpc = npcs[0];
-    //
-    //     for (auto & npc : npcs) {
-    //         nextNpc = npc.second;
-    //         if (lastNpc && nextNpc) {
-    //             AI_WaitTillEnd(nextNpc, lastNpc);
-    //             lastNpc = nextNpc;
-    //         }
-    //     }
-    // }
+    void zCMultilogue::Wait(oCNpc* npc)
+    {
 
-    // void zCMultilogue::MakeSelf(oCNpc *npc) {
-    //     if (npc) {
-    //         Wait(npc);
-    //         lastSelf = npc;
-    //         // Event next
-    //     }
-    // }
+        AI_WaitTillEnd(lastSelf, npc);
+        AI_WaitTillEnd(npc, lastSelf);
+
+        //Sync hero with new npc & npc with hero
+        AI_WaitTillEnd(player, npc);
+        AI_WaitTillEnd(npc, player);
+
+        //Sync all Npcs invited to trialogue
+        oCNpc* lastNpc;
+        oCNpc* nextNpc;
+
+        lastNpc = npcs[0];
+
+        for (auto & npc : npcs) {
+            nextNpc = npc.second;
+            if (lastNpc && nextNpc) {
+                AI_WaitTillEnd(nextNpc, lastNpc);
+                lastNpc = nextNpc;
+            }
+        }
+    }
+
+    void zCMultilogue::MakeSelf(oCNpc *npc) {
+        if (npc) {
+            Wait(npc);
+            lastSelf = npc;
+            oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
+            msg->slot = "EV_NEXT";
+            msg->flag = npc->idx;
+            player->GetEM()->OnMessage(msg, player);
+            parser->SetInstance("SELF", lastSelf);
+        }
+    }
+
+    void zCMultilogue::EV_Next(int id) {
+        oCNpc* npc = npcs[id];
+        if (npc) {
+            static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Next");
+            log -> Info("Next NPC: {0}", id);
+            npc->talkOther = nullptr;
+
+            cameraAdapter->SetTarget(npc);
+        }
+    }
 
 
     zCMultilogue* zMultilogue = nullptr; // Global instance

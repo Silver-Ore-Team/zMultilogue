@@ -6,6 +6,7 @@ namespace GOTHIC_NAMESPACE {
         oCNpc* target;
     public:
         void SetTarget(oCNpc* npc);
+        oCNpc* GetTarget() { return target; }
     };
 
     void zCMultilogueCameraAdapter::SetTarget(oCNpc* npc)
@@ -35,16 +36,5 @@ func void Trialogue_SetCamera (var int slfInstance, var int othInstance) {
     Trialogue_Wait (slfInstance);
 
     AI_Function_II (hero, _Trialogue_SetCameraPtr, _@ (slf), _@ (oth));
-};
-
-
-func void _hook_oCNpc_ActivateDialogCam () {
-    if (!Hlp_Is_oCNpc (ECX)) { return; };
-    var oCNpc slf; slf = _^ (ECX);
-
-    //Camera switches to .talkOther - override here
-    if (trialogueOverrideCameraTarget) {
-        slf.talkOther = trialogueOverrideCameraTarget;
-    };
 };
 */

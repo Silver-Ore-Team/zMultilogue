@@ -13,7 +13,7 @@ namespace GOTHIC_NAMESPACE {
     };
 
     int zMul_Start() {
-        auto log = NH::CreateLogger("Externals::zMul_Start");
+        static NH::Logger* log = NH::CreateLogger("Externals::zMul_Start");
         if (!zMultilogue) {
             log->Error("Multilogue not initialized.");
             return 1;
@@ -23,12 +23,40 @@ namespace GOTHIC_NAMESPACE {
     };
 
     int zMul_Finish() {
-        auto log = NH::CreateLogger("Externals::zMul_Finish");
+        static NH::Logger* log = NH::CreateLogger("Externals::zMul_Finish");
         if (!zMultilogue) {
             log->Error("Multilogue not initialized.");
             return 1;
         }
         zMultilogue->Finish();
+        return 0;
+    };
+
+    int zMul_Next() {
+        zCParser* par = zCParser::GetParser();
+        oCNpc* npc;
+        npc = (oCNpc*)par->GetInstance();
+
+        static NH::Logger* log = NH::CreateLogger("Externals::zMul_Next");
+        if (!zMultilogue) {
+            log->Error("Multilogue not initialized.");
+            return 1;
+        }
+        zMultilogue->MakeSelf(npc);
+        return 0;
+    };
+
+    int zMul_Wait() {
+        zCParser* par = zCParser::GetParser();
+        oCNpc* npc;
+        npc = (oCNpc*)par->GetInstance();
+
+        static NH::Logger* log = NH::CreateLogger("Externals::zMul_Wait");
+        if (!zMultilogue) {
+            log->Error("Multilogue not initialized.");
+            return 1;
+        }
+        zMultilogue->Wait(npc);
         return 0;
     };
 
@@ -38,5 +66,7 @@ namespace GOTHIC_NAMESPACE {
         parser->DefineExternal("ZMul_Invite", zMul_Invite, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMul_Start", zMul_Start, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMul_Finish", zMul_Finish, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        parser->DefineExternal("ZMul_Next", zMul_Next, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
+        parser->DefineExternal("ZMul_Wait", zMul_Wait, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
     }
 }
