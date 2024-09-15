@@ -56,7 +56,7 @@ namespace GOTHIC_NAMESPACE
 
         }
         else {
-            log->Error("Invalid NPC");
+            log->Warning("Invalid NPC");
         }
     }
 
@@ -132,39 +132,50 @@ namespace GOTHIC_NAMESPACE
 
     inline void zCMultilogue::ListNpcs() {
         static NH::Logger* log = NH::CreateLogger("zCMultilogue::ListNpcs");
-        log->Info("Listing NPCs:");
+        log->Trace("Listing NPCs:");
         for (auto& [key, value] : npcs) {
-            log->Info("NPC ID: {0}", key);
+            log->Trace("NPC ID: {0}", key);
         }
     }
 
     void zCMultilogue::Wait(oCNpc* npc)
     {
+        if (npc) {
+            static NH::Logger* log = NH::CreateLogger("zCMultilogue::Wait");
+            if (!npcs.contains(npc->idx)) {
+                log->Warning("NPC with ID {0} is not in the multilogue", npc->idx);
+                return;
+            }
+            AI_WaitTillEnd(lastSelf, npc);
+            AI_WaitTillEnd(npc, lastSelf);
 
-        AI_WaitTillEnd(lastSelf, npc);
-        AI_WaitTillEnd(npc, lastSelf);
+            //Sync hero with new npc & npc with hero
+            AI_WaitTillEnd(player, npc);
+            AI_WaitTillEnd(npc, player);
 
-        //Sync hero with new npc & npc with hero
-        AI_WaitTillEnd(player, npc);
-        AI_WaitTillEnd(npc, player);
+            //Sync all Npcs invited to trialogue
+            oCNpc* lastNpc;
+            oCNpc* nextNpc;
 
-        //Sync all Npcs invited to trialogue
-        oCNpc* lastNpc;
-        oCNpc* nextNpc;
+            lastNpc = npcs[0];
 
-        lastNpc = npcs[0];
-
-        for (auto & npc : npcs) {
-            nextNpc = npc.second;
-            if (lastNpc && nextNpc) {
-                AI_WaitTillEnd(nextNpc, lastNpc);
-                lastNpc = nextNpc;
+            for (auto & npc : npcs) {
+                nextNpc = npc.second;
+                if (lastNpc && nextNpc) {
+                    AI_WaitTillEnd(nextNpc, lastNpc);
+                    lastNpc = nextNpc;
+                }
             }
         }
     }
 
     void zCMultilogue::MakeSelf(oCNpc *npc) {
         if (npc) {
+            static NH::Logger* log = NH::CreateLogger("zCMultilogue::MakeSelf");
+            if (!npcs.contains(npc->idx)) {
+                log->Warning("NPC with ID {0} is not in the multilogue", npc->idx);
+                return;
+            }
             Wait(npc);
             lastSelf = npc;
             oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
