@@ -12,19 +12,19 @@ namespace GOTHIC_NAMESPACE {
 
 
     // G2A: 0x00758130 public: int __thiscall oCNpc::ActivateDialogCam(float)
-    auto Ivk_oCNpc_ActivateDialogCam = Union::CreateHook(reinterpret_cast<void*>(0x00758130), &oCNpc::ActivateDialogCam_Hook);
-    int oCNpc::ActivateDialogCam_Hook(float p1)
-    {
-        // if (zMultilogue) {
-        //     if (zMultilogue->IsRunning()) {
-        //         oCNpc* target = zMultilogue->GetCameraAdapter()->GetTarget();
-        //         if (target) {
-        //             this->talkOther = target;
-        //         }
-        //     }
-        // }
-        return (this->*Ivk_oCNpc_ActivateDialogCam)(p1);
-    }
+    // auto Ivk_oCNpc_ActivateDialogCam = Union::CreateHook(reinterpret_cast<void*>(0x00758130), &oCNpc::ActivateDialogCam_Hook);
+    // int oCNpc::ActivateDialogCam_Hook(float p1)
+    // {
+    //     if (zMultilogue) {
+    //         if (zMultilogue->IsRunning()) {
+    //             oCNpc* target = zMultilogue->GetCameraAdapter()->GetTarget();
+    //             if (target) {
+    //                 this->talkOther = target;
+    //             }
+    //         }
+    //     }
+    //     return (this->*Ivk_oCNpc_ActivateDialogCam)(p1);
+    // }
 
     auto Ivk_oCNpc_EV_Exchange = Union::CreateHook(reinterpret_cast<void*>(0x00753E30), &oCNpc::EV_Exchange_Hook);
     int oCNpc::EV_Exchange_Hook( oCMsgManipulate* csg ) {
@@ -33,11 +33,13 @@ namespace GOTHIC_NAMESPACE {
             static NH::Logger* log = NH::CreateLogger("oCNpc::EV_Exchange_Hook");
             if (slot.Upper() == "EV_FINISH") {
                 zMultilogue->EV_Finish();
+                return TRUE;
             }
             else if (slot.Upper() == "EV_NEXT") {
                 zMultilogue->EV_Next(csg->flag);
+                return TRUE;
             }
-            return TRUE;
+
         }
         return (this->*Ivk_oCNpc_EV_Exchange)(csg);
     }

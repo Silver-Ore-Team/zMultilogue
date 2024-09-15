@@ -24,6 +24,8 @@ namespace GOTHIC_NAMESPACE
         void EV_Next(int id);
     };
 
+    zCMultilogue* zMultilogue = nullptr; // Global instance
+
     zCMultilogue::zCMultilogue()
     {
         cameraAdapter = new zCMultilogueCameraAdapter();
@@ -89,23 +91,30 @@ namespace GOTHIC_NAMESPACE
             return;
         }
         else {
-            // static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
-            // if (!ogame->infoman)    { return; }
-            // if (!mgrInfos.Npc) { return; }
-            // if (!mgrInfos.Player) { return; }
-            //
-            // oCNpc* slf = mgrInfos.Npc;
-            // oCNpc* oth = mgrInfos.Player;
-            //
-            // AI_WaitTillEnd(slf, oth);
-            // AI_WaitTillEnd(oth, slf);
-            //
-            // Wait (slf);
-            // Wait (oth);
+            static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
+            if (!ogame->infoman)    { return; }
+            if (!mgrInfos.Npc) { return; }
+            if (!mgrInfos.Player) { return; }
+
+            MakeSelf(mgrInfos.Npc);
+
+            oCNpc* slf = mgrInfos.Npc;
+            oCNpc* oth = mgrInfos.Player;
+
+            // nie wiem czy to potrzebne
+            // ---
+            AI_WaitTillEnd(slf, oth);
+            AI_WaitTillEnd(oth, slf);
+
+            Wait (slf);
+            Wait (oth);
+            // ---
 
             oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
             msg->slot = "EV_FINISH";
             player->GetEM()->OnMessage(msg, player);
+
+            lastSelf->GetEM()->OnMessage( new oCMsgConversation( oCMsgConversation::EV_PROCESSINFOS), player );
         }
     }
 
@@ -116,7 +125,9 @@ namespace GOTHIC_NAMESPACE
         static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Finish");
         running = false;
         log->Info("Finishing multilogue with {0} NPCs.", npcs.size());
-        return;
+
+        delete this;
+        zMultilogue = nullptr;
     }
 
     inline void zCMultilogue::ListNpcs() {
@@ -177,6 +188,4 @@ namespace GOTHIC_NAMESPACE
         }
     }
 
-
-    zCMultilogue* zMultilogue = nullptr; // Global instance
 }
