@@ -5,197 +5,196 @@ namespace GOTHIC_NAMESPACE
     class zCMultilogue
     {
     private:
-        zCMultilogueCameraAdapter* cameraAdapter;
-        oCNpc* lastSelf;
-        std::unordered_map<int, oCNpc*> npcs;
-        bool running = false;
+        zCMultilogueCameraAdapter m_CameraAdapter;
+        oCNpc* m_LastSelf = nullptr;
+        std::unordered_map<int, oCNpc*> m_Npcs;
+        bool m_Running = false;
     public:
-        zCMultilogue();
-        ~zCMultilogue();
         void AddNpc(oCNpc* npc);
         void Start();
         void Finish();
         void ListNpcs();
         void MakeSelf(oCNpc* npc);
         void Wait (oCNpc* npc);
-        bool IsRunning() { return running; }
-        zCMultilogueCameraAdapter* GetCameraAdapter() { return cameraAdapter; }
+        bool IsRunning() const { return m_Running; }
+        zCMultilogueCameraAdapter& GetCameraAdapter() { return m_CameraAdapter; }
         void EV_Finish();
         void EV_Next(int id);
     };
 
-    zCMultilogue* zMultilogue = nullptr; // Global instance
+    static zCMultilogue zMultilogue = zCMultilogue{}; // Global instance
 
-    zCMultilogue::zCMultilogue()
-    {
-        cameraAdapter = new zCMultilogueCameraAdapter();
-    }
 
-    zCMultilogue::~zCMultilogue()
-    {
-        delete cameraAdapter;
-    }
-
-    void zCMultilogue::AddNpc(oCNpc* npc)
+    inline void zCMultilogue::AddNpc(oCNpc* npc)
     {
         static NH::Logger* log = NH::CreateLogger("zCMultilogue::AddNpc");
-        if (npc) {
-            if (npcs.contains(npc->idx)) {
-                log->Warning("NPC with ID {0} already exists.", npc->idx);
-            } else {
-                if (Npc_IsInActiveVoblist(npc)) {
-                    npc->ClearEM();
-                }
-                oCNpc* self = GetSelfInstance();
-                npc->state.StartAIState("ZS_MULTILOGUE", 0, 0, 0, 0);
-                parser->SetInstance("SELF", self);
-                npcs[npc->idx] = npc;
-            }
-            // comment later
-            ListNpcs();
-
-        }
-        else {
+        if (!npc) {
             log->Warning("Invalid NPC");
+            return;
         }
+        if (m_Npcs.contains(npc->idx)) {
+            log->Warning("NPC with ID {0} already exists.", npc->idx);
+            return;
+        }
+        if (Npc_IsInActiveVoblist(npc)) {
+            npc->ClearEM();
+        }
+        oCNpc* self = GetSelfInstance();
+        npc->state.StartAIState("ZS_MULTILOGUE", 0, 0, 0, 0);
+        parser->SetInstance("SELF", self);
+        m_Npcs[npc->idx] = npc;
     }
 
-    void zCMultilogue::Start()
+    inline void zCMultilogue::Start()
     {
         static NH::Logger* log = NH::CreateLogger("zCMultilogue::Start");
-        if (running) {
+        if (m_Running) {
             log->Warning("Multilogue already running.");
             return;
         }
-        else {
-            oCNpc* self = GetSelfInstance();
-            if (!self) {
-                log->Error("Failed to get SELF instance.");
-                return;
-            }
-            lastSelf = self;
-            AddNpc(self);
-            AddNpc(player);
-            running = true;
-            log->Info("Starting multilogue with {0} NPCs.", npcs.size());
-
-            Npc_FakeTalkState(GetSelfInstance());
+        oCNpc* self = GetSelfInstance();
+        if (!self) {
+            log->Error("Failed to get SELF instance.");
+            return;
         }
+        m_LastSelf = self;
+        AddNpc(self);
+        AddNpc(player);
+        Npc_FakeTalkState(GetSelfInstance());
+        m_Running = true;
+        log->Info("Starting multilogue with {0} NPCs.", m_Npcs.size());
+        ListNpcs();
     }
 
-    void zCMultilogue::Finish()
+    inline void zCMultilogue::Finish()
     {
         static NH::Logger* log = NH::CreateLogger("zCMultilogue::Finish");
-        if (!running) {
-            log->Warning("Multilogue not running.");
+        if (!m_Running) {
+            log->Warning("Multilogue not Running.");
             return;
         }
-        else {
-            static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
-            if (!ogame->infoman)    { return; }
-            if (!mgrInfos.Npc) { return; }
-            if (!mgrInfos.Player) { return; }
-
-            MakeSelf(mgrInfos.Npc);
-
-            oCNpc* slf = mgrInfos.Npc;
-            oCNpc* oth = mgrInfos.Player;
-
-            // nie wiem czy to potrzebne
-            // ---
-            AI_WaitTillEnd(slf, oth);
-            AI_WaitTillEnd(oth, slf);
-
-            Wait (slf);
-            Wait (oth);
-            // ---
-
-            oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
-            msg->slot = "EV_FINISH";
-            player->GetEM()->OnMessage(msg, player);
-
-            lastSelf->GetEM()->OnMessage( new oCMsgConversation( oCMsgConversation::EV_PROCESSINFOS), player );
+        static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
+        if (!ogame->infoman) {
+            log->Error("infoman not found.");
+            return;
         }
+        if (!mgrInfos.Npc) {
+            log->Error("`mgrInfos.Npc` is invalid.");
+            return;
+        }
+        if (!mgrInfos.Player) {
+            log->Error("`mgrInfos.Player` is invalid.");
+            return;
+        }
+
+        MakeSelf(mgrInfos.Npc);
+
+        oCNpc* slf = mgrInfos.Npc;
+        oCNpc* oth = mgrInfos.Player;
+
+        // nie wiem czy to potrzebne
+        // ---
+        AI_WaitTillEnd(slf, oth);
+        AI_WaitTillEnd(oth, slf);
+
+        Wait (slf);
+        Wait (oth);
+        // ---
+
+        oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
+        msg->slot = "EV_FINISH";
+        player->GetEM()->OnMessage(msg, player);
+        // Add EV_PROCESSINFOS at the end of a dialogue to prevent stuck when not calling AI_Stopprocesinfos
+        m_LastSelf->GetEM()->OnMessage( new oCMsgConversation( oCMsgConversation::EV_PROCESSINFOS), player );
     }
 
-    void zCMultilogue::EV_Finish() {
-        if (!running) {
+
+    inline void zCMultilogue::EV_Finish() {
+        static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Finish");
+        if (!m_Running) {
+            log->Warning("Multilogue has already finished.");
             return;
         }
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Finish");
-        running = false;
-        log->Info("Finishing multilogue with {0} NPCs.", npcs.size());
-
-        delete this;
-        zMultilogue = nullptr;
+        m_Running = false;
+        m_Npcs.clear();
+        m_LastSelf = nullptr;
+        m_CameraAdapter.SetTarget(nullptr);
+        log->Info("Finishing multilogue with {0} NPCs.", m_Npcs.size());
     }
 
     inline void zCMultilogue::ListNpcs() {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::ListNpcs");
+        static NH::Logger* log = NH::CreateLogger("zCMultilogue::ListNpcs"); 
         log->Trace("Listing NPCs:");
-        for (auto& [key, value] : npcs) {
+        for (auto& [key, value] : m_Npcs) {
             log->Trace("NPC ID: {0}", key);
         }
     }
 
-    void zCMultilogue::Wait(oCNpc* npc)
+    inline void zCMultilogue::Wait(oCNpc* npc)
     {
-        if (npc) {
-            static NH::Logger* log = NH::CreateLogger("zCMultilogue::Wait");
-            if (!npcs.contains(npc->idx)) {
-                log->Warning("NPC with ID {0} is not in the multilogue", npc->idx);
-                return;
-            }
-            AI_WaitTillEnd(lastSelf, npc);
-            AI_WaitTillEnd(npc, lastSelf);
+        static NH::Logger* log = NH::CreateLogger("zCMultilogue::Wait");
+        if (!npc) {
+            log->Warning("Invalid NPC.");
+            return;
+        }
+        if (!m_Npcs.contains(npc->idx)) {
+            log->Warning("NPC with ID {0} is not in the multilogue", npc->idx);
+            return;
+        }
+        AI_WaitTillEnd(m_LastSelf, npc);
+        AI_WaitTillEnd(npc, m_LastSelf);
 
-            //Sync hero with new npc & npc with hero
-            AI_WaitTillEnd(player, npc);
-            AI_WaitTillEnd(npc, player);
+        //Sync hero with new npc & npc with hero
+        AI_WaitTillEnd(player, npc);
+        AI_WaitTillEnd(npc, player);
 
-            //Sync all Npcs invited to trialogue
-            oCNpc* lastNpc;
-            oCNpc* nextNpc;
+        //Sync all Npcs invited to trialogue
+        oCNpc* lastNpc;
+        oCNpc* nextNpc;
 
-            lastNpc = npcs[0];
+        lastNpc = m_Npcs[0];
 
-            for (auto & npc : npcs) {
-                nextNpc = npc.second;
-                if (lastNpc && nextNpc) {
-                    AI_WaitTillEnd(nextNpc, lastNpc);
-                    lastNpc = nextNpc;
-                }
+        for (auto & item : m_Npcs) {
+            nextNpc = item.second;
+            if (lastNpc && nextNpc) {
+                AI_WaitTillEnd(nextNpc, lastNpc);
+                lastNpc = nextNpc;
             }
         }
     }
 
-    void zCMultilogue::MakeSelf(oCNpc *npc) {
-        if (npc) {
-            static NH::Logger* log = NH::CreateLogger("zCMultilogue::MakeSelf");
-            if (!npcs.contains(npc->idx)) {
-                log->Warning("NPC with ID {0} is not in the multilogue", npc->idx);
-                return;
-            }
-            Wait(npc);
-            lastSelf = npc;
-            oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
-            msg->slot = "EV_NEXT";
-            msg->flag = npc->idx;
-            player->GetEM()->OnMessage(msg, player);
-            parser->SetInstance("SELF", lastSelf);
-
-            Npc_FakeTalkState(npc);
+    inline void zCMultilogue::MakeSelf(oCNpc *npc) {
+        static NH::Logger* log = NH::CreateLogger("zCMultilogue::MakeSelf");
+        if (!npc) {
+            log->Warning("Invalid NPC.");
+            return;
         }
+        if (!m_Npcs.contains(npc->idx)) {
+            log->Warning("NPC with ID {0} is not in the multilogue", npc->idx);
+            return;
+        }
+        if (npc->idx == m_LastSelf->idx) {
+            log->Warning("NPC {0} is already a self.", npc->idx);
+            return;
+        }
+        m_LastSelf = npc;
+        Wait(npc);
+        oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
+        msg->slot = "EV_NEXT";
+        msg->flag = npc->idx;
+        player->GetEM()->OnMessage(msg, player);
+        parser->SetInstance("SELF", m_LastSelf);
+        Npc_FakeTalkState(npc);
     }
 
-    void zCMultilogue::EV_Next(int id) {
-        oCNpc* npc = npcs[id];
+    inline void zCMultilogue::EV_Next(int id) {
+        oCNpc* npc = m_Npcs[id];
         if (npc) {
             static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Next");
-            log -> Info("Next NPC: {0}", id);
+            log->Info("Next NPC: {0}", id);
             npc->talkOther = nullptr;
-
-            cameraAdapter->SetTarget(npc);
+            // Currently does nothing
+            m_CameraAdapter.SetTarget(npc);
         }
     }
 

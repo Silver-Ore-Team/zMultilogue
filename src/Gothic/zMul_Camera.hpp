@@ -3,14 +3,14 @@ namespace GOTHIC_NAMESPACE {
     class zCMultilogueCameraAdapter
     {
     private:
-        oCNpc* target;
+        oCNpc* m_Target = nullptr;
     public:
         void SetTarget(oCNpc* npc);
-        oCNpc* GetTarget() { return target; }
+        oCNpc* GetTarget() const { return m_Target; }
     };
 
-    void zCMultilogueCameraAdapter::SetTarget(oCNpc* npc)
+    inline void zCMultilogueCameraAdapter::SetTarget(oCNpc* npc)
     {
-        target = npc;
+        m_Target = npc;
     }
 }
