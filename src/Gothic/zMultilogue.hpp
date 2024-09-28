@@ -60,8 +60,9 @@ namespace GOTHIC_NAMESPACE
         m_LastSelf = self;
         AddNpc(self);
         AddNpc(player);
-        Npc_FakeTalkState(GetSelfInstance());
+        Npc_FakeTalkState(self);
         m_Running = true;
+        Wait(self);
         log->Info("Starting multilogue with {0} NPCs.", m_Npcs.size());
         ListNpcs();
     }
