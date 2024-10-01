@@ -1,9 +1,7 @@
-// Disable macro redefinition warning
-#pragma warning(disable: 4005)
-
 #include <Union/Hook.h>
-#include <NH/Logger.h>
 #include <ZenGin/zGothicAPI.h>
+
+#include "NH/Logger.h"
 
 #ifdef __G2A
 #define GOTHIC_NAMESPACE Gothic_II_Addon

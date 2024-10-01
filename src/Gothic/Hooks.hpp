@@ -4,7 +4,7 @@ namespace GOTHIC_NAMESPACE {
     //  G2: 0x00677A00 private: void __thiscall oCGame::DefineExternals_Ulfi(class zCParser *)
     // G2A: 0x006D4780 private: void __thiscall oCGame::DefineExternals_Ulfi(class zCParser *)
     void* oCGame_DefineExternals_Ulfi = reinterpret_cast<void*>(zSwitch(0x006495B0, 0x006715F0, 0x00677A00, 0x006D4780));
-    void __fastcall DefineExternals_Ulfi_PartialHook(Union::Registers& reg)
+    void __fastcall DefineExternals_Ulfi_PartialHook()
     {
         DefineExternals();
     }
@@ -27,20 +27,19 @@ namespace GOTHIC_NAMESPACE {
     // }
 
     auto Ivk_oCNpc_EV_Exchange = Union::CreateHook(reinterpret_cast<void*>(0x00753E30), &oCNpc::EV_Exchange_Hook);
-    int oCNpc::EV_Exchange_Hook( oCMsgManipulate* csg ) {
-        zSTRING slot = csg->slot;
-        if(slot) {
-            if (slot.Upper() == "EV_FINISH") {
+    int oCNpc::EV_Exchange_Hook( oCMsgManipulate* msg ) {
+        zSTRING msgSlot = msg->slot;
+        if (msgSlot) {
+            if (msgSlot.Upper() == "EV_FINISH") {
                 zMultilogue.EV_Finish();
                 return TRUE;
             }
-            if (slot.Upper() == "EV_NEXT") {
-                zMultilogue.EV_Next(csg->flag);
+            if (msgSlot.Upper() == "EV_NEXT") {
+                zMultilogue.EV_Next(msg->flag);
                 return TRUE;
             }
-
         }
-        return (this->*Ivk_oCNpc_EV_Exchange)(csg);
+        return (this->*Ivk_oCNpc_EV_Exchange)(msg);
     }
 
 
