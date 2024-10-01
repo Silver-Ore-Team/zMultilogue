@@ -89,7 +89,7 @@ namespace NH
 
         void SetLoggerLevel(LoggerLevel level)
         {
-            for (int i = 0; i < m_Adapters.GetCount(); i++)
+            for (size_t i = 0; i < m_Adapters.GetCount(); i++)
             {
                 m_Adapters[i]->SetLoggerLevel(level);
             }
