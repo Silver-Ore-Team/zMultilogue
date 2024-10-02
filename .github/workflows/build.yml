@@ -1,0 +1,98 @@
+name: Build CMake Project
+on:
+  workflow_call:
+    secrets:
+      SSH_KEY:
+        required: false
+        description: SSH private key for pushing version changes
+    inputs:
+      cmake-preset:
+        required: true
+        type: string
+      upload-artifact-dll:
+        required: false
+        type: string
+        default: false
+      upload-artifact-vdf:
+        required: false
+        type: string
+        default: false
+      msvc-toolkit:
+        required: false
+        type: string
+        default: 14.4
+      project-version:
+        required: false
+        type: string
+        default: false
+      push-version-commit:
+        required: false
+        type: boolean
+        default: false
+      push-version-branch:
+        required: false
+        type: string
+        default: main
+jobs:
+  build:
+    name: MSVC / Windows 2022
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: x86
+          toolset: ${{ inputs.msvc-toolkit }}
+          export-path-to-vcvarsall: VCVARSALL
+      - name: CMake Setup
+        uses: lukka/get-cmake@latest
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Set project version
+        if: ${{ inputs.project-version != 'false' }}
+        run: powershell ./set-version.ps1 ${{ inputs.project-version }}
+      - name: Setup token for branch rules bypass
+        uses: webfactory/ssh-agent@v0.9.0
+        if: ${{ inputs.push-version-commit == true }}
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+      - name: Commit version change
+        if: ${{ inputs.push-version-commit == true }}
+        run: |
+          New-Item -ItemType Directory -Force -Path ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.name "Nekobot"
+          git config --global user.email "nekobot-service.noreply@silveroreteam.pl"
+          git remote set-url origin git@github.com:Silver-Ore-Team/zMultilogue.git
+          git fetch --all
+          git checkout ${{ inputs.push-version-branch }}
+          $changes = $(git status -s)
+          if ($changes) {
+            git add CMakeLists.txt
+            git commit -m "[skip ci] set project version to ${{ inputs.project-version }}"
+            git push origin ${{ inputs.push-version-branch }}
+          } else {
+            echo "No changes to commit"
+          }
+      - name: CMake Configure
+        run: cmake --preset ${{ inputs.cmake-preset }}
+      - name: Ninja Build
+        run: ninja -C out/build/${{ inputs.cmake-preset }} -j 20
+      - name: CMake Install
+        run: cmake --install out/build/${{ inputs.cmake-preset }} --prefix out/install/${{ inputs.cmake-preset }}
+      - name: Archive DLL
+        if: ${{ inputs.upload-artifact-dll != 'false' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.upload-artifact-dll }}
+          path: out/install/${{ inputs.cmake-preset }}/bin/*.dll
+      - name: Archive VDF
+        uses: actions/upload-artifact@v4
+        if: ${{ inputs.upload-artifact-vdf != 'false' }}
+        with:
+          name: ${{ inputs.upload-artifact-vdf }}
+          path: out/install/${{ inputs.cmake-preset }}/*.vdf

@@ -38,3 +38,18 @@ target_compile_options(zMultilogue PRIVATE
         /external:I ${CMAKE_BINARY_DIR}/_deps
 )
 
+
+install(FILES $<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}> "${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.dll" TYPE BIN)
+
+configure_file("${CMAKE_SOURCE_DIR}/vdf/script.vs.in" "${CMAKE_BINARY_DIR}/script.vs")
+
+install(FILES $<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}> "${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.dll" TYPE BIN)
+install(FILES "${CMAKE_BINARY_DIR}/script.vs" DESTINATION "${CMAKE_INSTALL_PREFIX}")
+install(SCRIPT "${CMAKE_SOURCE_DIR}/vdf/vdf.cmake")
+install(CODE "execute_process(COMMAND ${CMAKE_SOURCE_DIR}/vdf/GothicVDFS.exe /B \"${CMAKE_INSTALL_PREFIX}/script.vs\" WORKING_DIRECTORY \"${CMAKE_INSTALL_PREFIX}\")")
+
+string(REPLACE "build" "install" INSTALL_DIR "${CMAKE_BINARY_DIR}")
+add_custom_target(${CMAKE_PROJECT_NAME}_vdf ALL
+        COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --prefix ${INSTALL_DIR}
+        DEPENDS ${CMAKE_PROJECT_NAME}
+        COMMENT "Run install to build VDF")
