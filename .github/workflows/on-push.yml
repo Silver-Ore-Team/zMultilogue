@@ -1,0 +1,18 @@
+name: On Push
+permissions: write-all
+on:
+  pull_request:
+    branches: [ "main"]
+  push:
+    branches: [ "main", "ci"]
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+jobs:
+  build-release:
+    name: Build Release
+    uses: ./.github/workflows/build.yml
+    with:
+      cmake-preset: x86-release
+      upload-artifact-dll: release-dll
+      upload-artifact-vdf: release-vdf
