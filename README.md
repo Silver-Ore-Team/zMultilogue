@@ -61,12 +61,12 @@ Look for [@muczciwek](https://discordapp.com/users/667438896594026517).
 #### Gothic Modding Community
 
 Biggest community of international Gothic modders.
-https://discord.gg/6rQQGVQK
+https://discord.gg/SJfHUv5SRW
 
 #### 🇵🇱 Historia Neka
 
 Official Discord of Nek's History, the mod we are working on and started zMultilogue for it.
-https://discord.gg/cvd6jhKB`
+https://discord.gg/4E2CeQAeWS
 
 
 ## License
