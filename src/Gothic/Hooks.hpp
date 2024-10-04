@@ -26,7 +26,9 @@ namespace GOTHIC_NAMESPACE {
     //     return (this->*Ivk_oCNpc_ActivateDialogCam)(p1);
     // }
 
-    auto Ivk_oCNpc_EV_Exchange = Union::CreateHook(reinterpret_cast<void*>(0x00753E30), &oCNpc::EV_Exchange_Hook);
+    // G1: 0x006AE310 protected: int __thiscall oCNpc::EV_Exchange(class oCMsgManipulate *)
+    // G2A: 0x00753E30 protected: int __thiscall oCNpc::EV_Exchange(class oCMsgManipulate *)
+    auto Ivk_oCNpc_EV_Exchange = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x006AE310, 0x00753E30)), &oCNpc::EV_Exchange_Hook);
     int oCNpc::EV_Exchange_Hook( oCMsgManipulate* msg ) {
         zSTRING msgSlot = msg->slot;
         if (msgSlot) {
