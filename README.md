@@ -7,7 +7,7 @@ based on the solution form [AFSP Trialogue package](https://github.com/Bad-Scien
 - [x] Implement the basic functionality of the multilogue system
 - [ ] Increase the default display dialogue distance if needed
 - [ ] Custom camera system
-- [ ] Gothic 1 compatibility
+- [x] Gothic 1 compatibility
 
 ## Usage
 1. Download `zMultilogue.vdf` and place it inside `<GOTHIC_ROOT>/Data` with Union installed to automatically load the plugin at the start of the game.
