@@ -43,6 +43,7 @@ namespace GOTHIC_NAMESPACE
         npc->state.StartAIState("ZS_MULTILOGUE", 0, 0, 0, 0);
         parser->SetInstance("SELF", self);
         m_Npcs[npc->idx] = npc;
+        log->Info("NPC with ID {0} added.", npc->idx);
     }
 
     inline void zCMultilogue::Start()
@@ -117,22 +118,27 @@ namespace GOTHIC_NAMESPACE
             return;
         }
         m_Running = false;
-        m_Npcs.clear();
         m_LastSelf = nullptr;
         m_CameraAdapter.SetTarget(nullptr);
         log->Info("Finishing multilogue with {0} NPCs.", m_Npcs.size());
+        m_Npcs.clear();
     }
+
 
     inline void zCMultilogue::ListNpcs() {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::ListNpcs"); 
-        log->Trace("Listing NPCs:");
+        static NH::Logger* log = NH::CreateLogger("zCMultilogue::ListNpcs");
+        std::string npcList = "Current NPCs: ";
         for (auto& [key, value] : m_Npcs) {
-            log->Trace("NPC ID: {0}", key);
+            npcList += std::to_string(key) + ", ";
         }
+        if (!m_Npcs.empty()) {
+            npcList.pop_back(); // Remove the last space
+            npcList.pop_back(); // Remove the last comma
+        }
+        log->Info(npcList.c_str());
     }
 
-    inline void zCMultilogue::Wait(oCNpc* npc)
-    {
+    inline void zCMultilogue::Wait(oCNpc* npc) {
         static NH::Logger* log = NH::CreateLogger("zCMultilogue::Wait");
         if (!npc) {
             log->Warning("Invalid NPC.");
@@ -150,17 +156,13 @@ namespace GOTHIC_NAMESPACE
         AI_WaitTillEnd(npc, player);
 
         //Sync all Npcs invited to trialogue
-        oCNpc* lastNpc;
-        oCNpc* nextNpc;
+        oCNpc* lastNpc = std::prev(m_Npcs.end())->second;
 
-        lastNpc = m_Npcs[0];
-
-        for (auto & item : m_Npcs) {
-            nextNpc = item.second;
-            if (lastNpc && nextNpc) {
-                AI_WaitTillEnd(nextNpc, lastNpc);
-                lastNpc = nextNpc;
+        for (auto & [id, currentNpc]: m_Npcs) {
+            if (lastNpc && currentNpc) {
+                AI_WaitTillEnd(npc, currentNpc);
             }
+            lastNpc = currentNpc;
         }
     }
 
@@ -189,13 +191,13 @@ namespace GOTHIC_NAMESPACE
     }
 
     inline void zCMultilogue::EV_Next(int id) {
-        oCNpc* npc = m_Npcs[id];
-        if (npc) {
+        auto item = m_Npcs.find(id);
+        if (item->second) {
             static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Next");
             log->Info("Next NPC: {0}", id);
-            npc->talkOther = nullptr;
+            item->second->talkOther = nullptr;
             // Currently does nothing
-            m_CameraAdapter.SetTarget(npc);
+            m_CameraAdapter.SetTarget(item->second);
         }
     }
 

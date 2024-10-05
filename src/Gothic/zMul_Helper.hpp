@@ -30,19 +30,28 @@ namespace GOTHIC_NAMESPACE
 
     void AI_WaitTillEnd(oCNpc* self, oCNpc* other)
     {
-        if (self && other) {
-            oCMsgConversation* msg = zNEW(oCMsgConversation)(oCMsgConversation::EV_WAITTILLEND,other);
-            int nr = other -> GetEM()->GetNumMessages();
-            zCEventMessage* watch = nullptr;
-            for (int i = nr - 1; i >= 0; i--) {
-                watch = other->GetEM()->GetEventMessage(i);
-                if (!watch->IsOverlay()) {
-                    msg->watchMsg = watch;
-                    break;
-                }
-            }
-            self->GetEM()->OnMessage(msg, self);
+        static NH::Logger* log = NH::CreateLogger("AI_WaitTillEnd");
+        if (!self || !other) {
+            log->Warning("Invalid NPC instances.");
+            return;
         }
+        if(self->idx == other->idx) {
+            //Imo this is not an error, no need to log it
+            //log->Debug("Self and other are the same.");
+            return;
+        }
+        log->Trace("Synching {0} with {1}", self->idx, other->idx);
+        oCMsgConversation* msg = zNEW(oCMsgConversation)(oCMsgConversation::EV_WAITTILLEND,other);
+        int nr = other -> GetEM()->GetNumMessages();
+        zCEventMessage* watch = nullptr;
+        for (int i = nr - 1; i >= 0; i--) {
+            watch = other->GetEM()->GetEventMessage(i);
+            if (!watch->IsOverlay()) {
+                msg->watchMsg = watch;
+                break;
+            }
+        }
+        self->GetEM()->OnMessage(msg, self);
     }
 
 
