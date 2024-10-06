@@ -6,6 +6,7 @@ namespace GOTHIC_NAMESPACE
     {
     private:
         zCMultilogueCameraAdapter m_CameraAdapter;
+        zCDialogDistanceController m_DistanceController;
         oCNpc* m_LastSelf = nullptr;
         std::unordered_map<int, oCNpc*> m_Npcs;
         bool m_Running = false;
@@ -120,6 +121,7 @@ namespace GOTHIC_NAMESPACE
         m_Running = false;
         m_LastSelf = nullptr;
         m_CameraAdapter.SetTarget(nullptr);
+        m_DistanceController.RestoreDistance();
         log->Info("Finishing multilogue with {0} NPCs.", m_Npcs.size());
         m_Npcs.clear();
     }
@@ -196,6 +198,12 @@ namespace GOTHIC_NAMESPACE
             static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Next");
             log->Info("Next NPC: {0}", id);
             item->second->talkOther = nullptr;
+
+            float npcDistance = player->GetDistanceToVobApprox(*static_cast<zCVob*>(GetSelfInstance()));
+            log->Debug("Distance to player: {0}", npcDistance);
+            if (npcDistance > m_DistanceController.GetDefaultDistance()) {
+                m_DistanceController.SetDistance(npcDistance);
+            }
             // Currently does nothing
             m_CameraAdapter.SetTarget(item->second);
         }
