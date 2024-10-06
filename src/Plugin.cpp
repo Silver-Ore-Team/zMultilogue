@@ -2,6 +2,7 @@
 #pragma warning(disable: 4005)
 
 #include <Union/Hook.h>
+#include <Union/RawMemory.h>
 #include <ZenGin/zGothicAPI.h>
 
 #include "NH/Logger.h"

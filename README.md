@@ -5,7 +5,7 @@ based on the solution form [AFSP Trialogue package](https://github.com/Bad-Scien
 ## ToDo
 
 - [x] Implement the basic functionality of the multilogue system
-- [ ] Increase the default display dialogue distance if needed
+- [x] Increase the default display dialogue distance if needed
 - [ ] Custom camera system
 - [x] Gothic 1 compatibility
 
