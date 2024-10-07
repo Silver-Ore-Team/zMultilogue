@@ -15,7 +15,7 @@ Its goal is to replace Trialoue packages based on [Ikarus](https://github.com/Le
 - [x] Gothic 1 compatibility
 
 ## Documentation
-Documentation of a project is provided a GitHub wiki.
+Documentation of a project is provided as a GitHub wiki.
 
 - [Home](https://github.com/Silver-Ore-Team/zMultilogue/wiki)
     - [Getting Started](https://github.com/Silver-Ore-Team/zMultilogue/wiki/Getting-Started)
