@@ -3,4 +3,5 @@
 #include "Gothic/zMul_Distance.hpp"
 #include "Gothic/zMultilogue.hpp"
 #include "Gothic/Externals.hpp"
+#include "Gothic/Options.hpp"
 #include "Gothic/Hooks.hpp"

@@ -40,7 +40,7 @@ namespace GOTHIC_NAMESPACE
             //log->Debug("Self and other are the same.");
             return;
         }
-        log->Trace("Synching {0} with {1}", self->idx, other->idx);
+        // log->Trace("Synching {0} with {1}", self->idx, other->idx);
         oCMsgConversation* msg = zNEW(oCMsgConversation)(oCMsgConversation::EV_WAITTILLEND,other);
         int nr = other -> GetEM()->GetNumMessages();
         zCEventMessage* watch = nullptr;
