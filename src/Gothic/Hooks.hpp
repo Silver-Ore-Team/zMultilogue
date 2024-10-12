@@ -10,6 +10,17 @@ namespace GOTHIC_NAMESPACE {
     }
     auto Partial_DefineExternals_Ulfi = Union::CreatePartialHook(oCGame_DefineExternals_Ulfi, &DefineExternals_Ulfi_PartialHook);
 
+    //  G1: 0x00424AF0 public: void __thiscall CGameManager::Run(void)
+    // G1A: 0x004275D0 public: void __thiscall CGameManager::Run(void)
+    //  G2: 0x004254F0 public: void __thiscall CGameManager::Run(void)
+    // G2A: 0x00425830 public: void __thiscall CGameManager::Run(void)
+    void* CGameManager_Run = reinterpret_cast<void*>(zSwitch(0x00424AF0, 0x004275D0, 0x004254F0, 0x00425830));
+    void __fastcall CGameManager_Run_PartialHook() {
+        ApplyOptions();
+    };
+    auto Partial_CGameManager_Run = Union::CreatePartialHook(CGameManager_Run, CGameManager_Run_PartialHook);
+
+
 
     // G2A: 0x00758130 public: int __thiscall oCNpc::ActivateDialogCam(float)
     // auto Ivk_oCNpc_ActivateDialogCam = Union::CreateHook(reinterpret_cast<void*>(0x00758130), &oCNpc::ActivateDialogCam_Hook);
