@@ -59,6 +59,7 @@ namespace GOTHIC_NAMESPACE
             log->Error("Failed to get SELF instance.");
             return;
         }
+        m_CameraAdapter.Reset();
         m_LastSelf = self;
         AddNpc(self);
         AddNpc(player);
@@ -120,7 +121,6 @@ namespace GOTHIC_NAMESPACE
         }
         m_Running = false;
         m_LastSelf = nullptr;
-        m_CameraAdapter.SetTarget(nullptr);
         m_DistanceController.RestoreDistance();
         log->Info("Finishing multilogue with {0} NPCs.", m_Npcs.size());
         m_Npcs.clear();
@@ -204,9 +204,6 @@ namespace GOTHIC_NAMESPACE
             if (npcDistance > m_DistanceController.GetDefaultDistance()) {
                 m_DistanceController.SetDistance(npcDistance);
             }
-            // Currently does nothing
-            m_CameraAdapter.SetTarget(item->second);
         }
     }
-
 }
