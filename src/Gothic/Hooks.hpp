@@ -46,7 +46,7 @@ namespace GOTHIC_NAMESPACE {
         return (this->*Ivk_oCNpc_EV_Exchange)(msg);
     }
 
-
+    // G1: 0x006B2430 public: int __thiscall oCNpc::ActivateDialogCam(float)
     // G2A: 0x00758130 public: int __thiscall oCNpc::ActivateDialogCam(float)
     auto Ivk_oCNpc_ActivateDialogCam = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x006B2430, 0x00758130)), &oCNpc::ActivateDialogCam_Hook);
     int oCNpc::ActivateDialogCam_Hook(float time)
@@ -86,7 +86,7 @@ namespace GOTHIC_NAMESPACE {
     void __fastcall zCAICamera_StartDialogCam_PartialHook(Union::Registers& reg)
     {
         // Don't move camera durring first camera take
-        int* numDialogCamTakes = reinterpret_cast<int*>(zSwitch(reg.eax, reg.ebx + 0x0D0));
+        int* numDialogCamTakes = reinterpret_cast<int*>(zSwitch(reg.ebp + 0x0CC, reg.ebx + 0x0D0));
         if (*numDialogCamTakes >= 1) {
            return;
         }
