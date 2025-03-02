@@ -11,7 +11,7 @@ Its goal is to replace Trialoue packages based on [Ikarus](https://github.com/Le
 
 - [x] Implement the basic functionality of the multilogue system
 - [x] Increase the default display dialogue distance if needed
-- [ ] Custom camera system
+- [x] Advanced camera system
 - [x] Gothic 1 compatibility
 
 ## Documentation

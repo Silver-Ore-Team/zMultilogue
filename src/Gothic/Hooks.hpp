@@ -20,23 +20,6 @@ namespace GOTHIC_NAMESPACE {
     };
     auto Partial_CGameManager_Run = Union::CreatePartialHook(CGameManager_Run, CGameManager_Run_PartialHook);
 
-
-
-    // G2A: 0x00758130 public: int __thiscall oCNpc::ActivateDialogCam(float)
-    // auto Ivk_oCNpc_ActivateDialogCam = Union::CreateHook(reinterpret_cast<void*>(0x00758130), &oCNpc::ActivateDialogCam_Hook);
-    // int oCNpc::ActivateDialogCam_Hook(float p1)
-    // {
-    //     if (zMultilogue) {
-    //         if (zMultilogue->IsRunning()) {
-    //             oCNpc* target = zMultilogue->GetCameraAdapter()->GetTarget();
-    //             if (target) {
-    //                 this->talkOther = target;
-    //             }
-    //         }
-    //     }
-    //     return (this->*Ivk_oCNpc_ActivateDialogCam)(p1);
-    // }
-
     // G1: 0x006AE310 protected: int __thiscall oCNpc::EV_Exchange(class oCMsgManipulate *)
     // G2A: 0x00753E30 protected: int __thiscall oCNpc::EV_Exchange(class oCMsgManipulate *)
     auto Ivk_oCNpc_EV_Exchange = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x006AE310, 0x00753E30)), &oCNpc::EV_Exchange_Hook);
@@ -51,9 +34,66 @@ namespace GOTHIC_NAMESPACE {
                 zMultilogue.EV_Next(msg->flag);
                 return TRUE;
             }
+            if (msgSlot.Upper() == "EV_CAMNPCS") {
+                zMultilogue.GetCameraAdapter().EV_SetNpcs(reinterpret_cast<oCNpc*>(msg->flag), dynamic_cast<oCNpc*>(msg->targetVob));
+                return TRUE;
+            }
+            if (msgSlot.Upper() == "EV_CAMMODE") {
+                zMultilogue.GetCameraAdapter().EV_SetMode(static_cast<zCMultilogueCameraAdapter::Mode>(msg->flag));
+                return TRUE;
+            }
         }
         return (this->*Ivk_oCNpc_EV_Exchange)(msg);
     }
 
+    // G1: 0x006B2430 public: int __thiscall oCNpc::ActivateDialogCam(float)
+    // G2A: 0x00758130 public: int __thiscall oCNpc::ActivateDialogCam(float)
+    auto Ivk_oCNpc_ActivateDialogCam = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x006B2430, 0x00758130)), &oCNpc::ActivateDialogCam_Hook);
+    int oCNpc::ActivateDialogCam_Hook(float time)
+    {
+        static NH::Logger* log = NH::CreateLogger("oCNpc::ActivateDialogCam");
+        if (zMultilogue.IsRunning() && zMultilogue.GetCameraAdapter().GetMode() != zCMultilogueCameraAdapter::Mode::DEFAULT) {
+            
+            oCNpc* source = zMultilogue.GetCameraAdapter().GetSource();
+            oCNpc* target = zMultilogue.GetCameraAdapter().GetTarget();
+            if (target && source) {
+                zCArray<zCVob*> targetList;
+                targetList.Insert(source);
+                targetList.Insert(target);
+                if (time>0.0f) ogame->GetCameraAI()->SetDialogCamDuration(time);
+                auto mode = zSTRING("CAMMODDIALOG");
+                ogame->GetCameraAI()->SetMode(mode, targetList);
+                log->Info("Dialog camera activated. Source ID: {0}, Target ID: {1}", source->idx, target->idx);
+                return TRUE;
+            }
+            log->Warning("Source or target is not set.");
+        }
+        return (this->*Ivk_oCNpc_ActivateDialogCam)(time);
+    }
+
+    void __fastcall oCNpc_EV_PlaySound_PartialHook(Union::Registers& reg);
+    auto Partial_oCNpc_EV_PlaySound = Union::CreatePartialHook(reinterpret_cast<void*>(zSwitch(0x006B3124, 0x00758D97)), &oCNpc_EV_PlaySound_PartialHook);
+    void __fastcall oCNpc_EV_PlaySound_PartialHook(Union::Registers& reg)
+    {
+        // Disable ActivateDialogCam call if camera mode is set to FULL
+        if (zMultilogue.IsRunning() && zMultilogue.GetCameraAdapter().GetMode() == zCMultilogueCameraAdapter::Mode::FULL) {
+            reg.eip = zSwitch(0x006B3130, 0x00758DA3);
+        }
+    }
+
+    void __fastcall zCAICamera_StartDialogCam_PartialHook(Union::Registers& reg);
+    auto Partial_zCAICamera_StartDialogCam = Union::CreatePartialHook(reinterpret_cast<void*>(zSwitch(0x004A9F00, 0x004B2378)), &zCAICamera_StartDialogCam_PartialHook);
+    void __fastcall zCAICamera_StartDialogCam_PartialHook(Union::Registers& reg)
+    {
+        // Don't move camera durring first camera take
+        int* numDialogCamTakes = reinterpret_cast<int*>(zSwitch(reg.ebp + 0x0CC, reg.ebx + 0x0D0));
+        if (*numDialogCamTakes >= 1) {
+           return;
+        }
+        // Move camera durring the second camera take if needed
+        else if (zMultilogue.IsRunning() && zMultilogue.GetCameraAdapter().GetMode() == zCMultilogueCameraAdapter::Mode::FULL) {
+            reg.eip = zSwitch(0x004A9F17, 0x004B2393);
+        }
+    }
 
 }
