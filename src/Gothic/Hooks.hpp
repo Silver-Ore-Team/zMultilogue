@@ -52,7 +52,7 @@ namespace GOTHIC_NAMESPACE {
     int oCNpc::ActivateDialogCam_Hook(float time)
     {
         static NH::Logger* log = NH::CreateLogger("oCNpc::ActivateDialogCam");
-        if (zMultilogue.IsRunning() && zMultilogue.GetCameraAdapter().GetMode() != zCMultilogueCameraAdapter::Mode::DEFAULT) {
+        if (zMultilogue.GetCameraAdapter().GetMode() != zCMultilogueCameraAdapter::Mode::DEFAULT) {
             
             oCNpc* source = zMultilogue.GetCameraAdapter().GetSource();
             oCNpc* target = zMultilogue.GetCameraAdapter().GetTarget();
@@ -76,7 +76,7 @@ namespace GOTHIC_NAMESPACE {
     void __fastcall oCNpc_EV_PlaySound_PartialHook(Union::Registers& reg)
     {
         // Disable ActivateDialogCam call if camera mode is set to FULL
-        if (zMultilogue.IsRunning() && zMultilogue.GetCameraAdapter().GetMode() == zCMultilogueCameraAdapter::Mode::FULL) {
+        if (zMultilogue.GetCameraAdapter().GetMode() == zCMultilogueCameraAdapter::Mode::FULL) {
             reg.eip = zSwitch(0x006B3130, 0x00758DA3);
         }
     }
@@ -91,7 +91,7 @@ namespace GOTHIC_NAMESPACE {
            return;
         }
         // Move camera durring the second camera take if needed
-        else if (zMultilogue.IsRunning() && zMultilogue.GetCameraAdapter().GetMode() == zCMultilogueCameraAdapter::Mode::FULL) {
+        else if (zMultilogue.GetCameraAdapter().GetMode() == zCMultilogueCameraAdapter::Mode::FULL) {
             reg.eip = zSwitch(0x004A9F17, 0x004B2393);
         }
     }
