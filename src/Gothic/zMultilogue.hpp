@@ -182,6 +182,10 @@ namespace GOTHIC_NAMESPACE
             log->Warning("NPC {0} is already a self.", npc->idx);
             return;
         }
+        if (npc->idx == player->idx) {
+            log->Warning("NPC {0} is a player.", npc->idx);
+            return;
+        }
         m_LastSelf = npc;
         Wait(npc);
         oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
@@ -193,13 +197,13 @@ namespace GOTHIC_NAMESPACE
     }
 
     inline void zCMultilogue::EV_Next(int id) {
-        auto item = m_Npcs.find(id);
-        if (item->second) {
+        oCNpc* npc = m_Npcs.find(id)->second;
+        if (npc) {
             static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Next");
             log->Info("Next NPC: {0}", id);
-            item->second->talkOther = nullptr;
+            npc->talkOther = nullptr;
 
-            float npcDistance = player->GetDistanceToVobApprox(*static_cast<zCVob*>(GetSelfInstance()));
+            float npcDistance = player->GetDistanceToVobApprox(*npc);
             log->Debug("Distance to player: {0}", npcDistance);
             if (npcDistance > m_DistanceController.GetDefaultDistance()) {
                 m_DistanceController.SetDistance(npcDistance);
