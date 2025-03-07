@@ -58,8 +58,8 @@ namespace GOTHIC_NAMESPACE {
             oCNpc* target = zMultilogue.GetCameraAdapter().GetTarget();
             if (target && source) {
                 zCArray<zCVob*> targetList;
-                targetList.Insert(source);
                 targetList.Insert(target);
+                targetList.Insert(source);
                 if (time>0.0f) ogame->GetCameraAI()->SetDialogCamDuration(time);
                 auto mode = zSTRING("CAMMODDIALOG");
                 ogame->GetCameraAI()->SetMode(mode, targetList);

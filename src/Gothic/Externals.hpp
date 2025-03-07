@@ -34,8 +34,8 @@ namespace GOTHIC_NAMESPACE {
     int zMulCam_SetNpcs()
     {
         zCParser* par = zCParser::GetParser();
-        oCNpc* source = reinterpret_cast<oCNpc*>(par->GetInstance());
         oCNpc* target = reinterpret_cast<oCNpc*>(par->GetInstance());
+        oCNpc* source = reinterpret_cast<oCNpc*>(par->GetInstance());
         zMultilogue.Wait(player);
         zMultilogue.GetCameraAdapter().SetNpcs(source, target);
         return 0;

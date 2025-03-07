@@ -53,11 +53,11 @@ namespace GOTHIC_NAMESPACE {
         static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_SetNpcs");
         if (target) {
             m_Target = target;
-            log->Debug("Target set to npc with id: {0}", target->idx);
+            log->Debug("Target set to npc with ID: {0}", target->idx);
         }
         if (source) {
             m_Source = source;
-            log->Debug("Source set to npc with id: {0}", source->idx);
+            log->Debug("Source set to npc with ID: {0}", source->idx);
         }
         if (m_Target && m_Source && m_Mode == Mode::FULL) {
             player->ActivateDialogCam_Hook(0.0f);
