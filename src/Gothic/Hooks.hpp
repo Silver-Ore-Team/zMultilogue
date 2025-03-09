@@ -95,7 +95,7 @@ namespace GOTHIC_NAMESPACE {
     {
         // Don't move camera durring first camera take
         int* numDialogCamTakes = reinterpret_cast<int*>(zSwitch(reg.ebp + 0x0CC, reg.ebx + 0x0D0));
-        if (*numDialogCamTakes >= 1) {
+        if (*numDialogCamTakes == 1) {
            return;
         }
         // Move camera durring the second camera take if needed
