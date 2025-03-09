@@ -63,4 +63,21 @@ namespace GOTHIC_NAMESPACE
         }
     }
 
+    zSTRING GetVobString(zCVob* vob)
+    {
+        if (vob) {
+            zSTRING info;
+            oCNpc* npc = dynamic_cast<oCNpc*>(vob);
+            if (npc) {
+                info += "Npc ID: ";
+                info += npc->idx;
+            }
+            else {
+                info += "Vob: ";
+                info += vob->objectName;;
+            }    
+            return info;
+        }
+        return "nullptr";
+    }
 };

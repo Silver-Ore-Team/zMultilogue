@@ -34,12 +34,20 @@ namespace GOTHIC_NAMESPACE {
                 zMultilogue.EV_Next(msg->flag);
                 return TRUE;
             }
-            if (msgSlot.Upper() == "EV_CAMNPCS") {
-                zMultilogue.GetCameraAdapter().EV_SetNpcs(reinterpret_cast<oCNpc*>(msg->flag), dynamic_cast<oCNpc*>(msg->targetVob));
+            if (msgSlot.Upper() == "EV_CAMTARGET") {
+                zMultilogue.GetCameraAdapter().EV_SetTarget(msg->targetVob);
+                return TRUE;
+            }
+            if (msgSlot.Upper() == "EV_CAMSOURCE") {
+                zMultilogue.GetCameraAdapter().EV_SetSource(msg->targetVob);
                 return TRUE;
             }
             if (msgSlot.Upper() == "EV_CAMMODE") {
                 zMultilogue.GetCameraAdapter().EV_SetMode(static_cast<zCMultilogueCameraAdapter::Mode>(msg->flag));
+                return TRUE;
+            }
+            if (msgSlot.Upper() == "EV_CAMEVENT") {
+                zMultilogue.GetCameraAdapter().EV_CameraEvent();
                 return TRUE;
             }
         }
@@ -54,8 +62,8 @@ namespace GOTHIC_NAMESPACE {
         static NH::Logger* log = NH::CreateLogger("oCNpc::ActivateDialogCam");
         if (zMultilogue.GetCameraAdapter().GetMode() != zCMultilogueCameraAdapter::Mode::DEFAULT) {
             
-            oCNpc* source = zMultilogue.GetCameraAdapter().GetSource();
-            oCNpc* target = zMultilogue.GetCameraAdapter().GetTarget();
+            zCVob* source = zMultilogue.GetCameraAdapter().GetSource();
+            zCVob* target = zMultilogue.GetCameraAdapter().GetTarget();
             if (target && source) {
                 zCArray<zCVob*> targetList;
                 targetList.Insert(target);
@@ -63,7 +71,7 @@ namespace GOTHIC_NAMESPACE {
                 if (time>0.0f) ogame->GetCameraAI()->SetDialogCamDuration(time);
                 auto mode = zSTRING("CAMMODDIALOG");
                 ogame->GetCameraAI()->SetMode(mode, targetList);
-                log->Info("Dialog camera activated. Source ID: {0}, Target ID: {1}", source->idx, target->idx);
+                log->Info("Dialog camera activated. Source " + GetVobString(source) + " Target " + GetVobString(target));
                 return TRUE;
             }
             log->Warning("Source or target is not set.");
@@ -93,6 +101,21 @@ namespace GOTHIC_NAMESPACE {
         // Move camera durring the second camera take if needed
         else if (zMultilogue.GetCameraAdapter().GetMode() == zCMultilogueCameraAdapter::Mode::FULL) {
             reg.eip = zSwitch(0x004A9F17, 0x004B2393);
+        }
+    }
+
+    void __fastcall oCSpawnManager_CheckRemoveNpc_PartialHook(Union::Registers& reg);
+    auto Partial_oCSpawnManager_CheckRemoveNpc = Union::CreatePartialHook(reinterpret_cast<void*>(zSwitch(0x006D0CDD, 0x007795D8)), &oCSpawnManager_CheckRemoveNpc_PartialHook);
+    void __fastcall oCSpawnManager_CheckRemoveNpc_PartialHook(Union::Registers& reg)
+    {
+        // Don't remove npc if it's in multilogue or dialogue with player
+        if (zMultilogue.GetCameraAdapter().GetMode() != zCMultilogueCameraAdapter::Mode::DEFAULT) {
+            oCNpc* npc = reinterpret_cast<oCNpc*>(reg.esi);
+            if (npc) {
+                if (zMultilogue.IsNpcInMultilogue(npc) || npc == player->talkOther) {
+                    reg.eip = zSwitch(0x006D0DD0, 0x00779679);
+                }
+            }
         }
     }
 
