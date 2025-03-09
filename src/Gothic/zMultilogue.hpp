@@ -18,6 +18,7 @@ namespace GOTHIC_NAMESPACE
         void MakeSelf(oCNpc* npc);
         void Wait (oCNpc* npc);
         bool IsRunning() const { return m_Running; }
+        bool IsNpcInMultilogue(oCNpc* npc) const { return m_Npcs.contains(npc->idx); }
         zCMultilogueCameraAdapter& GetCameraAdapter() { return m_CameraAdapter; }
         void EV_Finish();
         void EV_Next(int id);
@@ -59,7 +60,7 @@ namespace GOTHIC_NAMESPACE
             log->Error("Failed to get SELF instance.");
             return;
         }
-        m_CameraAdapter.Reset();
+        m_CameraAdapter.Reset(); // Is this necessary?
         m_LastSelf = self;
         AddNpc(self);
         AddNpc(player);

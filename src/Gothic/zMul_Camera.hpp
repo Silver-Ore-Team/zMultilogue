@@ -10,18 +10,22 @@ namespace GOTHIC_NAMESPACE {
             FULL
         };
     private:
-        oCNpc* m_Target = nullptr;
-        oCNpc* m_Source = nullptr;
+        zCVob* m_Target = nullptr;
+        zCVob* m_Source = nullptr;
         Mode m_Mode = Mode::DEFAULT;
     public:
-        oCNpc* GetTarget() const { return m_Target; }
-        oCNpc* GetSource() const { return m_Source; }
+        zCVob* GetTarget() const { return m_Target; }
+        zCVob* GetSource() const { return m_Source; }
         Mode GetMode() const { return m_Mode; }
         void Reset() {m_Target = nullptr; m_Source = nullptr; m_Mode = Mode::DEFAULT;}
-        void SetNpcs(oCNpc* source, oCNpc* target);
+        void SetTarget(zCVob* target);
+        void SetSource(zCVob* source);
         void SetMode(Mode mode);
-        void EV_SetNpcs(oCNpc* source, oCNpc* target);
+        void CameraEvent();
+        void EV_SetTarget(zCVob* target);
+        void EV_SetSource(zCVob* source);
         void EV_SetMode(Mode mode);
+        void EV_CameraEvent();
     };
     inline void zCMultilogueCameraAdapter::SetMode(Mode mode)
     {
@@ -39,28 +43,67 @@ namespace GOTHIC_NAMESPACE {
     }
         
 
-    inline void zCMultilogueCameraAdapter::SetNpcs(oCNpc* source, oCNpc* target)
+    inline void zCMultilogueCameraAdapter::SetSource(zCVob* source)
     {
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::SetSource");
+        if (!source) {
+            log->Warning("Invalid source.");
+            return;
+        }
         oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
-        msg->slot = "EV_CAMNPCS";
-        msg->targetVob = target;
-        msg->flag = (int)source;
+        msg->slot = "EV_CAMSOURCE";
+        msg->targetVob = source;
         player->GetEM()->OnMessage(msg, player);
     }
 
-    inline void zCMultilogueCameraAdapter::EV_SetNpcs(oCNpc* source, oCNpc* target)
+    inline void zCMultilogueCameraAdapter::SetTarget(zCVob* target)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_SetNpcs");
-        if (target) {
-            m_Target = target;
-            log->Debug("Target set to npc with ID: {0}", target->idx);
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::SetTarget");
+        if (!target) {
+            log->Warning("Invalid target.");
+            return;
         }
-        if (source) {
-            m_Source = source;
-            log->Debug("Source set to npc with ID: {0}", source->idx);
+        oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
+        msg->slot = "EV_CAMTARGET";
+        msg->targetVob = target;
+        player->GetEM()->OnMessage(msg, player);
+    }
+
+    inline void zCMultilogueCameraAdapter::CameraEvent()
+    {
+        oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
+        msg->slot = "EV_CAMEVENT";
+        player->GetEM()->OnMessage(msg, player);
+    }
+
+    inline void zCMultilogueCameraAdapter::EV_SetSource(zCVob* source)
+    {
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_SetSource");
+        m_Source = source;
+        log->Debug("Source " + GetVobString(source));
+    }
+
+    inline void zCMultilogueCameraAdapter::EV_SetTarget(zCVob* target)
+    {
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_SetTarget");
+        m_Target = target;
+        log->Debug("Target " + GetVobString(target));
+    }
+
+    inline void zCMultilogueCameraAdapter::EV_CameraEvent()
+    {
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_CameraEvent");
+        if (m_Mode != Mode::FULL) {
+            return;
         }
-        if (m_Target && m_Source && m_Mode == Mode::FULL) {
-            player->ActivateDialogCam_Hook(0.0f);
+        if (!m_Target) {
+            log->Warning("Target is not set.");
+            return;
         }
+        if (!m_Source) {
+            log->Warning("Source is not set.");
+            return;
+        }
+        player->ActivateDialogCam_Hook(0.0f);
     }
 }
