@@ -84,11 +84,11 @@ namespace GOTHIC_NAMESPACE
             return;
         }
         if (!mgrInfos.Npc) {
-            log->Error("`mgrInfos.Npc` is invalid.");
+            log->Error("mgrInfos.Npc is invalid.");
             return;
         }
         if (!mgrInfos.Player) {
-            log->Error("`mgrInfos.Player` is invalid.");
+            log->Error("mgrInfos.Player is invalid.");
             return;
         }
 
@@ -123,6 +123,18 @@ namespace GOTHIC_NAMESPACE
         m_Running = false;
         m_LastSelf = nullptr;
         m_DistanceController.RestoreDistance();
+        static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
+        if (!mgrInfos.Npc) {
+            log->Error("mgrInfos.Npc is invalid.");
+            return;
+        }
+        player->talkOther = mgrInfos.Npc;
+        for (auto& [key, npc] : m_Npcs) {
+            if (npc && npc != player && npc != mgrInfos.Npc) {
+                npc->talkOther = nullptr;
+                npc->state.StartRtnState(1); // Force routine exchange
+            }
+        }
         log->Info("Finishing multilogue with {0} NPCs.", m_Npcs.size());
         m_Npcs.clear();
     }
