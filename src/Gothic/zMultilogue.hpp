@@ -200,13 +200,13 @@ namespace GOTHIC_NAMESPACE
             return;
         }
         m_LastSelf = npc;
-        Wait(npc);
         oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
         msg->slot = "EV_NEXT";
         msg->flag = npc->idx;
         player->GetEM()->OnMessage(msg, player);
         parser->SetInstance("SELF", m_LastSelf);
         Npc_FakeTalkState(npc);
+        Wait(npc);
     }
 
     inline void zCMultilogue::EV_Next(int id) {
@@ -218,6 +218,7 @@ namespace GOTHIC_NAMESPACE
 
             float npcDistance = player->GetDistanceToVobApprox(*npc);
             log->Debug("Distance to player: {0}", npcDistance);
+            npcDistance += 200.0f; // Add some buffer
             if (npcDistance > m_DistanceController.GetDefaultDistance()) {
                 m_DistanceController.SetDistance(npcDistance);
             }
