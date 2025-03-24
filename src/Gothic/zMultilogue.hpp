@@ -200,6 +200,7 @@ namespace GOTHIC_NAMESPACE
             return;
         }
         m_LastSelf = npc;
+        Wait(npc);
         oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
         msg->slot = "EV_NEXT";
         msg->flag = npc->idx;
