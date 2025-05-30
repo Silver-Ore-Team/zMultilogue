@@ -22,6 +22,7 @@ namespace GOTHIC_NAMESPACE
         zCMultilogueCameraAdapter& GetCameraAdapter() { return m_CameraAdapter; }
         void EV_Finish();
         void EV_Next(int id);
+        void Reset();
     };
 
     static zCMultilogue zMultilogue = zCMultilogue{}; // Global instance
@@ -225,4 +226,12 @@ namespace GOTHIC_NAMESPACE
             }
         }
     }
+
+    inline void zCMultilogue::Reset() {
+        m_CameraAdapter = zCMultilogueCameraAdapter{};
+        m_DistanceController = zCDialogDistanceController{};
+        m_LastSelf = nullptr;
+        m_Npcs.clear();
+        m_Running = false;
+    };
 }
