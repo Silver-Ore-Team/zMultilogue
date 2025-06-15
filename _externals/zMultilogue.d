@@ -25,6 +25,11 @@ func void zMul_Finish() {};
 /// @param slf NPC to wait for
 func void zMul_Wait(var C_NPC slf) {};
 
+/// Enables/disables auto-turning of the NPCs
+/// `talker`->`hero` and `hero`->`talker`
+/// @param autoTurn `1` = enabled, `0` = disabled
+func void zMul_AutoTurn(var int autoTurn) {};
+
 // =========================================================
 //
 //  Camera functions 
@@ -62,7 +67,7 @@ func void zMulCam_Event() {};
 
 // =========================================================
 //
-//  To Include in the script
+//  To Include in the scripts
 //
 // =========================================================
 func void ZS_MULTILOGUE() {
