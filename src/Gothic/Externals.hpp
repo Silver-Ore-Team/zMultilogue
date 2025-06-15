@@ -42,6 +42,15 @@ namespace GOTHIC_NAMESPACE {
         return 0;
     };
 
+    int zMul_AutoTurn()
+    {
+        zCParser* par = zCParser::GetParser();
+        int autoTurn;
+        par->GetParameter(autoTurn);
+        zMultilogue.SetAutoTurn(autoTurn != 0);
+        return 0;
+    };
+
     int zMulCam_SetNpcs()
     {
         zCParser* par = zCParser::GetParser();
@@ -130,6 +139,7 @@ namespace GOTHIC_NAMESPACE {
         parser->DefineExternal("ZMul_Finish", zMul_Finish, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMul_Next", zMul_Next, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMul_Wait", zMul_Wait, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
+        parser->DefineExternal("ZMul_AutoTurn", zMul_AutoTurn, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_SetNpcs", zMulCam_SetNpcs, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_SetTargetNpc", zMulCam_SetTargetNpc, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_SetSourceNpc", zMulCam_SetSourceNpc, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
