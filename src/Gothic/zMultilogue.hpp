@@ -10,6 +10,7 @@ namespace GOTHIC_NAMESPACE
         oCNpc* m_LastSelf = nullptr;
         std::unordered_map<int, oCNpc*> m_Npcs;
         bool m_Running = false;
+        bool m_AutoTurn = false;
     public:
         void AddNpc(oCNpc* npc);
         void Start();
@@ -23,6 +24,7 @@ namespace GOTHIC_NAMESPACE
         void EV_Finish();
         void EV_Next(int id);
         void Reset();
+        void SetAutoTurn(bool autoTurn) { m_AutoTurn = autoTurn; }
     };
 
     static zCMultilogue zMultilogue = zCMultilogue{}; // Global instance
@@ -61,7 +63,7 @@ namespace GOTHIC_NAMESPACE
             log->Error("Failed to get SELF instance.");
             return;
         }
-        m_CameraAdapter.Reset(); // Is this necessary?
+        m_AutoTurn = false;
         m_LastSelf = self;
         AddNpc(self);
         AddNpc(player);
@@ -209,6 +211,11 @@ namespace GOTHIC_NAMESPACE
         parser->SetInstance("SELF", m_LastSelf);
         Npc_FakeTalkState(npc);
         Wait(npc);
+        // Self and player will turn to each other if m_AutoTurn is enabled
+        if (m_AutoTurn) {
+            m_LastSelf->GetEM()->OnMessage(new oCMsgMovement(oCMsgMovement::EV_TURNTOVOB, player), m_LastSelf);
+            player->GetEM()->OnMessage(new oCMsgMovement(oCMsgMovement::EV_TURNTOVOB, m_LastSelf), player);
+        }
     }
 
     inline void zCMultilogue::EV_Next(int id) {
@@ -233,5 +240,5 @@ namespace GOTHIC_NAMESPACE
         m_LastSelf = nullptr;
         m_Npcs.clear();
         m_Running = false;
-    };
+    }
 }
