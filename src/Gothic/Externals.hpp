@@ -132,6 +132,13 @@ namespace GOTHIC_NAMESPACE {
         return 0;
     };
 
+    int zMul_Continue()
+    {
+        zMultilogue.Continue();
+        WaitForPlayerAI();
+        return 0;
+    }
+
     void DefineExternals()
     {
         parser->DefineExternal("ZMul_Invite", zMul_Invite, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
@@ -147,5 +154,6 @@ namespace GOTHIC_NAMESPACE {
         parser->DefineExternal("ZMulCam_SetSourceVob", zMulCam_SetSourceVob, zPAR_TYPE_VOID, zPAR_TYPE_STRING, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_SetMode", zMulCam_SetMode, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_Event", zMulCam_Event, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        parser->DefineExternal("ZMul_Continue", zMul_Continue, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
     }
 }

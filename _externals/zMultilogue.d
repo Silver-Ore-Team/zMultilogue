@@ -30,6 +30,9 @@ func void zMul_Wait(var C_NPC slf) {};
 /// @param autoTurn `1` = enabled, `0` = disabled
 func void zMul_AutoTurn(var int autoTurn) {};
 
+/// Continues the Multilogue to the next dialog choice
+func void zMul_Continue() {};
+
 // =========================================================
 //
 //  Camera functions 
