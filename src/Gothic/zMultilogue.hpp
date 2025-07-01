@@ -25,6 +25,7 @@ namespace GOTHIC_NAMESPACE
         void EV_Next(int id);
         void Reset();
         void SetAutoTurn(bool autoTurn) { m_AutoTurn = autoTurn; }
+        void Continue();
     };
 
     static zCMultilogue zMultilogue = zCMultilogue{}; // Global instance
@@ -241,4 +242,16 @@ namespace GOTHIC_NAMESPACE
         m_Npcs.clear();
         m_Running = false;
     }
+
+    inline void zCMultilogue::Continue() {
+        static NH::Logger* log = NH::CreateLogger("zCMultilogue::Continue");
+        if (!m_Running) {
+            log->Warning("Multilogue is not running.");
+            return;
+        }
+        static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
+        MakeSelf(mgrInfos.Npc);
+        m_LastSelf->GetEM()->OnMessage( new oCMsgConversation( oCMsgConversation::EV_PROCESSINFOS), player );
+    }
+
 }
