@@ -132,7 +132,7 @@ namespace GOTHIC_NAMESPACE
             log->Error("mgrInfos.Npc is invalid.");
             return;
         }
-        player->talkOther = mgrInfos.Npc;
+        Npc_ReturnToZSTalk(mgrInfos.Npc);
         for (auto& [key, npc] : m_Npcs) {
             if (npc && npc != player && npc != mgrInfos.Npc) {
                 npc->talkOther = nullptr;

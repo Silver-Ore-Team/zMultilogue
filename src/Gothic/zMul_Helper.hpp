@@ -63,6 +63,13 @@ namespace GOTHIC_NAMESPACE
         }
     }
 
+    void Npc_ReturnToZSTalk(oCNpc* npc) {
+        if (npc) {
+            npc->state.curState.loop = parser->GetIndex("ZS_TALK_LOOP");
+            npc->state.curState.end = parser->GetIndex("ZS_TALK_END");
+        }
+    }
+
     zSTRING GetVobString(zCVob* vob)
     {
         if (vob) {
