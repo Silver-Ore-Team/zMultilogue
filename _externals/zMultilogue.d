@@ -31,6 +31,8 @@ func void zMul_Wait(var C_NPC slf) {};
 func void zMul_AutoTurn(var int autoTurn) {};
 
 /// Continues the Multilogue to the next dialog choice
+/// Call it instead of `zMul_Finish` if you want to continue the dialog
+/// Must be called before `Info_AddChoice`
 func void zMul_Continue() {};
 
 // =========================================================
