@@ -1,0 +1,3 @@
+file(MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/vdf/System/Autorun")
+file(COPY "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}.dll" DESTINATION "${CMAKE_INSTALL_PREFIX}/vdf/System/Autorun")
+file(COPY "${CMAKE_SOURCE_DIR}/vdf/System/Autorun/ZS_Multilogue.d" DESTINATION "${CMAKE_INSTALL_PREFIX}/vdf/System/Autorun")

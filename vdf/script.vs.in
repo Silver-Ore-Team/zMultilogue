@@ -4,5 +4,6 @@ BaseDir=vdf
 VDFName=zMultilogue.vdf
 [FILES]
 System\Autorun\*.dll
+System\Autorun\*.d
 System\*.dll
 [ENDVDF]
