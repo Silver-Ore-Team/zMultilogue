@@ -5,7 +5,6 @@ namespace GOTHIC_NAMESPACE
     class zCMultilogue
     {
     private:
-        zCMultilogueCameraAdapter m_CameraAdapter;
         zCDialogDistanceController m_DistanceController;
         oCNpc* m_LastSelf = nullptr;
         std::unordered_map<int, oCNpc*> m_Npcs;
@@ -20,7 +19,6 @@ namespace GOTHIC_NAMESPACE
         void Wait (oCNpc* npc);
         bool IsRunning() const { return m_Running; }
         bool IsNpcInMultilogue(oCNpc* npc) const { return m_Npcs.contains(npc->idx); }
-        zCMultilogueCameraAdapter& GetCameraAdapter() { return m_CameraAdapter; }
         void EV_Finish();
         void EV_Next(int id);
         void Reset();
@@ -236,7 +234,6 @@ namespace GOTHIC_NAMESPACE
     }
 
     inline void zCMultilogue::Reset() {
-        m_CameraAdapter = zCMultilogueCameraAdapter{};
         m_DistanceController = zCDialogDistanceController{};
         m_LastSelf = nullptr;
         m_Npcs.clear();

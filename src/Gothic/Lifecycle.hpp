@@ -53,6 +53,7 @@ namespace GOTHIC_NAMESPACE
 	void LoadBegin()
 	{
         zMultilogue.Reset();
+		zMulCamera.Reset();
 	}
 
 	void LoadEnd()

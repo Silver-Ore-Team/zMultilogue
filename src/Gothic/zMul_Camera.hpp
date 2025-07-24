@@ -1,6 +1,6 @@
 
 namespace GOTHIC_NAMESPACE {
-    class zCMultilogueCameraAdapter
+    class zCMultilogueCamera
     {
     public:
         enum Mode
@@ -27,7 +27,10 @@ namespace GOTHIC_NAMESPACE {
         void EV_SetMode(Mode mode);
         void EV_CameraEvent();
     };
-    inline void zCMultilogueCameraAdapter::SetMode(Mode mode)
+
+    static zCMultilogueCamera zMulCamera {};
+
+    inline void zCMultilogueCamera::SetMode(Mode mode)
     {
         oCMsgManipulate* msg = new oCMsgManipulate(oCMsgManipulate::EV_EXCHANGE);
         msg->slot = "EV_CAMMODE";
@@ -35,17 +38,17 @@ namespace GOTHIC_NAMESPACE {
         player->GetEM()->OnMessage(msg, player);
     }
 
-    inline void zCMultilogueCameraAdapter::EV_SetMode(Mode mode)
+    inline void zCMultilogueCamera::EV_SetMode(Mode mode)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_SetMode");
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::EV_SetMode");
         m_Mode = mode;
         log->Debug("Mode set to {0}", (int)mode);
     }
         
 
-    inline void zCMultilogueCameraAdapter::SetSource(zCVob* source)
+    inline void zCMultilogueCamera::SetSource(zCVob* source)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::SetSource");
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::SetSource");
         if (!source) {
             log->Warning("Invalid source.");
             return;
@@ -56,9 +59,9 @@ namespace GOTHIC_NAMESPACE {
         player->GetEM()->OnMessage(msg, player);
     }
 
-    inline void zCMultilogueCameraAdapter::SetTarget(zCVob* target)
+    inline void zCMultilogueCamera::SetTarget(zCVob* target)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::SetTarget");
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::SetTarget");
         if (!target) {
             log->Warning("Invalid target.");
             return;
@@ -69,30 +72,30 @@ namespace GOTHIC_NAMESPACE {
         player->GetEM()->OnMessage(msg, player);
     }
 
-    inline void zCMultilogueCameraAdapter::CameraEvent()
+    inline void zCMultilogueCamera::CameraEvent()
     {
         oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
         msg->slot = "EV_CAMEVENT";
         player->GetEM()->OnMessage(msg, player);
     }
 
-    inline void zCMultilogueCameraAdapter::EV_SetSource(zCVob* source)
+    inline void zCMultilogueCamera::EV_SetSource(zCVob* source)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_SetSource");
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::EV_SetSource");
         m_Source = source;
         log->Debug("Source " + GetVobString(source));
     }
 
-    inline void zCMultilogueCameraAdapter::EV_SetTarget(zCVob* target)
+    inline void zCMultilogueCamera::EV_SetTarget(zCVob* target)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_SetTarget");
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::EV_SetTarget");
         m_Target = target;
         log->Debug("Target " + GetVobString(target));
     }
 
-    inline void zCMultilogueCameraAdapter::EV_CameraEvent()
+    inline void zCMultilogueCamera::EV_CameraEvent()
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCameraAdapter::EV_CameraEvent");
+        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::EV_CameraEvent");
         if (m_Mode != Mode::FULL) {
             return;
         }
