@@ -63,13 +63,6 @@ namespace GOTHIC_NAMESPACE
         }
     }
 
-    void Npc_ReturnToZSTalk(oCNpc* npc) {
-        if (npc) {
-            npc->state.curState.loop = parser->GetIndex("ZS_TALK_LOOP");
-            npc->state.curState.end = parser->GetIndex("ZS_TALK_END");
-        }
-    }
-
     zSTRING GetVobString(zCVob* vob)
     {
         if (vob) {
@@ -86,5 +79,17 @@ namespace GOTHIC_NAMESPACE
             return info;
         }
         return "nullptr";
+    }
+    
+    oCNpc* GetDialogOwner()
+    {
+        static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
+        if (mgrInfos.HasFinished()) {
+            return nullptr;
+        }
+        if (mgrInfos.Npc) {
+            return mgrInfos.Npc;
+        }
+        return nullptr;
     }
 };

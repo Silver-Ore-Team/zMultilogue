@@ -134,7 +134,9 @@ namespace GOTHIC_NAMESPACE {
 
     int zMul_Continue()
     {
-        zMultilogue.Continue();
+        static NH::Logger* log = NH::CreateLogger("zMul_Continue");
+        log->Warning("This function is deprecated");
+        // Leave for compatibility
         WaitForPlayerAI();
         return 0;
     }
