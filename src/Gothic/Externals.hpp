@@ -56,8 +56,8 @@ namespace GOTHIC_NAMESPACE {
         zCParser* par = zCParser::GetParser();
         zCVob* target = reinterpret_cast<zCVob*>(par->GetInstance());
         zCVob* source = reinterpret_cast<zCVob*>(par->GetInstance());
-        zMultilogue.GetCameraAdapter().SetSource(source);
-        zMultilogue.GetCameraAdapter().SetTarget(target);
+        zMulCamera.SetSource(source);
+        zMulCamera.SetTarget(target);
         WaitForPlayerAI();
         return 0;
     };
@@ -66,7 +66,7 @@ namespace GOTHIC_NAMESPACE {
     {
         zCParser* par = zCParser::GetParser();
         oCNpc* npc = reinterpret_cast<oCNpc*>(par->GetInstance());
-        zMultilogue.GetCameraAdapter().SetTarget(npc);
+        zMulCamera.SetTarget(npc);
         WaitForPlayerAI();
         return 0;
     }
@@ -75,7 +75,7 @@ namespace GOTHIC_NAMESPACE {
     {
         zCParser* par = zCParser::GetParser();
         oCNpc* npc = reinterpret_cast<oCNpc*>(par->GetInstance());
-        zMultilogue.GetCameraAdapter().SetSource(npc);
+        zMulCamera.SetSource(npc);
         WaitForPlayerAI();
         return 0;
     }
@@ -93,7 +93,7 @@ namespace GOTHIC_NAMESPACE {
             log->Warning("Vob not found: {0}", vobName.ToChar());
             return 0;
         }
-        zMultilogue.GetCameraAdapter().SetTarget(vob);
+        zMulCamera.SetTarget(vob);
         WaitForPlayerAI();
         return 0;
     }
@@ -110,7 +110,7 @@ namespace GOTHIC_NAMESPACE {
             log->Warning("Vob not found: {0}", vobName.ToChar());
             return 0;
         }
-        zMultilogue.GetCameraAdapter().SetSource(vob);
+        zMulCamera.SetSource(vob);
         WaitForPlayerAI();
         return 0;
     }
@@ -120,14 +120,14 @@ namespace GOTHIC_NAMESPACE {
         zCParser* par = zCParser::GetParser();
         int mode; 
         par->GetParameter(mode);
-        zMultilogue.GetCameraAdapter().SetMode(static_cast<zCMultilogueCameraAdapter::Mode>(mode));
+        zMulCamera.SetMode(static_cast<zCMultilogueCamera::Mode>(mode));
         WaitForPlayerAI();
         return 0;
     };
 
     int zMulCam_Event()
     {
-        zMultilogue.GetCameraAdapter().CameraEvent();
+        zMulCamera.CameraEvent();
         WaitForPlayerAI();
         return 0;
     };
@@ -139,6 +139,12 @@ namespace GOTHIC_NAMESPACE {
         return 0;
     }
 
+    int zMulCam_Reset()
+    {
+        zMulCamera.Reset();
+        return 0;
+    }
+
     void DefineExternals()
     {
         parser->DefineExternal("ZMul_Invite", zMul_Invite, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
@@ -147,6 +153,8 @@ namespace GOTHIC_NAMESPACE {
         parser->DefineExternal("ZMul_Next", zMul_Next, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMul_Wait", zMul_Wait, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMul_AutoTurn", zMul_AutoTurn, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
+        parser->DefineExternal("ZMul_Continue", zMul_Continue, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        
         parser->DefineExternal("ZMulCam_SetNpcs", zMulCam_SetNpcs, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_SetTargetNpc", zMulCam_SetTargetNpc, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_SetSourceNpc", zMulCam_SetSourceNpc, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
@@ -154,6 +162,6 @@ namespace GOTHIC_NAMESPACE {
         parser->DefineExternal("ZMulCam_SetSourceVob", zMulCam_SetSourceVob, zPAR_TYPE_VOID, zPAR_TYPE_STRING, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_SetMode", zMulCam_SetMode, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
         parser->DefineExternal("ZMulCam_Event", zMulCam_Event, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMul_Continue", zMul_Continue, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        parser->DefineExternal("ZMulCam_Reset", zMulCam_Reset, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
     }
 }
