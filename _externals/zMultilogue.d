@@ -68,3 +68,6 @@ func void zMulCam_SetSourceVob(var string vobName) {};
 
 /// Executes the camera event
 func void zMulCam_Event() {};
+
+/// Resets the camera to the default state instantly
+func void zMulCam_Reset() {};
