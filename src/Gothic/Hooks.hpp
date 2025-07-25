@@ -99,4 +99,16 @@ namespace GOTHIC_NAMESPACE {
         }
     }
 
+    // AI_StopprocessInfos
+    // G1:  int __cdecl sub_64F110()
+    // G2A: int __cdecl sub_6DBB10() 
+    void __fastcall sub_6DBB10_PartialHook();
+    auto Partial_sub_6DBB10 = Union::CreatePartialHook(reinterpret_cast<void*>(zSwitch(0x0064F110, 0x006DBB10)), &sub_6DBB10_PartialHook);
+    void __fastcall sub_6DBB10_PartialHook()
+    {
+        if (zMultilogue.IsRunning())
+        {
+            zMultilogue.Finish();
+        }
+    }
 }
