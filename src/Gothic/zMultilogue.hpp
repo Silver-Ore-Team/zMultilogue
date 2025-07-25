@@ -23,7 +23,7 @@ namespace GOTHIC_NAMESPACE
         void EV_Next(int id);
         void Reset();
         void SetAutoTurn(bool autoTurn) { m_AutoTurn = autoTurn; }
-        void Continue();
+        oCNpc* GetLastSelf() const { return m_LastSelf; }
     };
 
     static zCMultilogue zMultilogue = zCMultilogue{}; // Global instance
@@ -40,12 +40,15 @@ namespace GOTHIC_NAMESPACE
             log->Warning("NPC with ID {0} already exists.", npc->idx);
             return;
         }
-        if (Npc_IsInActiveVoblist(npc)) {
+        if (Npc_IsInActiveVoblist(npc) && npc != GetDialogOwner() && npc != player) {
             npc->ClearEM();
         }
-        oCNpc* self = GetSelfInstance();
-        npc->state.StartAIState("ZS_MULTILOGUE", 0, 0, 0, 0);
-        parser->SetInstance("SELF", self);
+        if (npc != GetDialogOwner() && npc != player) {
+            // StartAIState changes self so we back it up
+            oCNpc* self = GetSelfInstance();
+            npc->state.StartAIState("ZS_MULTILOGUE", 0, 0, 0, 0);
+            parser->SetInstance("SELF", self);
+        }
         m_Npcs[npc->idx] = npc;
         log->Info("NPC with ID {0} added.", npc->idx);
     }
@@ -57,18 +60,12 @@ namespace GOTHIC_NAMESPACE
             log->Warning("Multilogue already running.");
             return;
         }
-        oCNpc* self = GetSelfInstance();
-        if (!self) {
-            log->Error("Failed to get SELF instance.");
-            return;
-        }
         m_AutoTurn = false;
-        m_LastSelf = self;
-        AddNpc(self);
+        m_LastSelf = GetDialogOwner();
         AddNpc(player);
-        Npc_FakeTalkState(self);
+        AddNpc(m_LastSelf);
         m_Running = true;
-        Wait(self);
+        Wait(m_LastSelf);
         log->Info("Starting multilogue with {0} NPCs.", m_Npcs.size());
         ListNpcs();
     }
@@ -80,39 +77,24 @@ namespace GOTHIC_NAMESPACE
             log->Warning("Multilogue not Running.");
             return;
         }
-        static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
         if (!ogame->infoman) {
             log->Error("infoman not found.");
             return;
         }
-        if (!mgrInfos.Npc) {
-            log->Error("mgrInfos.Npc is invalid.");
-            return;
-        }
-        if (!mgrInfos.Player) {
-            log->Error("mgrInfos.Player is invalid.");
+        if (!GetDialogOwner()) {
+            log->Error("dialog owner is invalid.");
             return;
         }
 
-        MakeSelf(mgrInfos.Npc);
+        MakeSelf(GetDialogOwner());
 
-        oCNpc* slf = mgrInfos.Npc;
-        oCNpc* oth = mgrInfos.Player;
-
-        // nie wiem czy to potrzebne
-        // ---
-        AI_WaitTillEnd(slf, oth);
-        AI_WaitTillEnd(oth, slf);
-
-        Wait (slf);
-        Wait (oth);
-        // ---
+        // Idk if this is needed, but I don't want to touch it
+        Wait (m_LastSelf);
+        Wait (player);
 
         oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
         msg->slot = "EV_FINISH";
         player->GetEM()->OnMessage(msg, player);
-        // Add EV_PROCESSINFOS at the end of a dialogue to prevent stuck when not calling AI_Stopprocesinfos
-        m_LastSelf->GetEM()->OnMessage( new oCMsgConversation( oCMsgConversation::EV_PROCESSINFOS), player );
     }
 
 
@@ -125,14 +107,12 @@ namespace GOTHIC_NAMESPACE
         m_Running = false;
         m_LastSelf = nullptr;
         m_DistanceController.RestoreDistance();
-        static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
-        if (!mgrInfos.Npc) {
-            log->Error("mgrInfos.Npc is invalid.");
+        if (!GetDialogOwner()) {
+            log->Error("dialog owner is invalid.");
             return;
         }
-        Npc_ReturnToZSTalk(mgrInfos.Npc);
         for (auto& [key, npc] : m_Npcs) {
-            if (npc && npc != player && npc != mgrInfos.Npc) {
+            if (npc && npc != player && npc != GetDialogOwner()) {
                 npc->talkOther = nullptr;
                 npc->state.StartRtnState(1); // Force routine exchange
             }
@@ -208,7 +188,9 @@ namespace GOTHIC_NAMESPACE
         msg->flag = npc->idx;
         player->GetEM()->OnMessage(msg, player);
         parser->SetInstance("SELF", m_LastSelf);
-        Npc_FakeTalkState(npc);
+        if (npc != GetDialogOwner()) {
+            Npc_FakeTalkState(npc);
+        }
         Wait(npc);
         // Self and player will turn to each other if m_AutoTurn is enabled
         if (m_AutoTurn) {
@@ -238,17 +220,6 @@ namespace GOTHIC_NAMESPACE
         m_LastSelf = nullptr;
         m_Npcs.clear();
         m_Running = false;
-    }
-
-    inline void zCMultilogue::Continue() {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::Continue");
-        if (!m_Running) {
-            log->Warning("Multilogue is not running.");
-            return;
-        }
-        static oCInformationManager& mgrInfos = oCInformationManager::GetInformationManager();
-        MakeSelf(mgrInfos.Npc);
-        m_LastSelf->GetEM()->OnMessage( new oCMsgConversation( oCMsgConversation::EV_PROCESSINFOS), player );
     }
 
 }

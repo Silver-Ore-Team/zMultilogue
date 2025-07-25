@@ -111,4 +111,22 @@ namespace GOTHIC_NAMESPACE {
             zMultilogue.Finish();
         }
     }
+
+    // Info_AddChoice
+    // G1:  int __cdecl sub_64F320()
+    // G2A: int __cdecl sub_6DBE20()
+    void __fastcall sub_6DBE20_PartialHook();
+    auto Partial_sub_6DBE20 = Union::CreatePartialHook(reinterpret_cast<void*>(zSwitch(0x0064F320, 0x006DBE20)), &sub_6DBE20_PartialHook);
+    void __fastcall sub_6DBE20_PartialHook()
+    {
+        if (zMultilogue.IsRunning())
+        {
+            // When displaying choices, we want to make dialog owner `self`
+            oCNpc* owner = GetDialogOwner();
+            if (owner != zMultilogue.GetLastSelf()) 
+            {
+                zMultilogue.MakeSelf(owner);
+            }
+        }
+    }
 }
