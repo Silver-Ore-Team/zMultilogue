@@ -9,7 +9,7 @@ namespace GOTHIC_NAMESPACE
 
         Union::Array<NH::Logger*> loggers = NH::LoggerFactory::GetInstance()->GetLoggers();
         {
-            static NH::Logger* log = NH::CreateLogger("zMultilogue::GothicOptions");
+            static NH::Logger* log = NH::CreateLogger("zMul::GothicOptions");
             zSTRING unionValue = zoptions->ReadString("ZMULTILOGUE", "LoggerLevelUnion", "INFO");
             zSTRING zSpyValue = zoptions->ReadString("ZMULTILOGUE", "LoggerLevelZSpy", "DEBUG");
 

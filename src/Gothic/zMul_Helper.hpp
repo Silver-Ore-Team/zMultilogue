@@ -2,7 +2,7 @@ namespace GOTHIC_NAMESPACE
 {
     oCNpc* GetSelfInstance()
     {
-        static NH::Logger* log = NH::CreateLogger("GetSelfInstance");
+        static NH::Logger* log = NH::CreateLogger("zMul::Helpers::GetSelfInstance");
         zCPar_Symbol* sym = parser->GetSymbol("SELF");
         if (sym) {
             oCNpc* self = dynamic_cast<oCNpc*>((zCVob*)sym->GetInstanceAdr());
@@ -30,7 +30,7 @@ namespace GOTHIC_NAMESPACE
 
     void AI_WaitTillEnd(oCNpc* self, oCNpc* other)
     {
-        static NH::Logger* log = NH::CreateLogger("AI_WaitTillEnd");
+        static NH::Logger* log = NH::CreateLogger("zMul::Helpers::AI_WaitTillEnd");
         if (!self || !other) {
             log->Warning("Invalid NPC instances.");
             return;

@@ -39,7 +39,7 @@ namespace GOTHIC_NAMESPACE {
     auto Ivk_oCNpc_ActivateDialogCam = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x006B2430, 0x00758130)), &oCNpc::ActivateDialogCam_Hook);
     int oCNpc::ActivateDialogCam_Hook(float time)
     {
-        static NH::Logger* log = NH::CreateLogger("oCNpc::ActivateDialogCam");
+        static NH::Logger* log = NH::CreateLogger("zMul::oCNpc::ActivateDialogCam");
         if (zMulCamera.GetMode() != zCMultilogueCamera::Mode::DEFAULT) {
             
             zCVob* source = zMulCamera.GetSource();
