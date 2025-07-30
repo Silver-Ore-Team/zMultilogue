@@ -51,7 +51,7 @@ namespace GOTHIC_NAMESPACE {
                 if (time>0.0f) ogame->GetCameraAI()->SetDialogCamDuration(time);
                 auto mode = zSTRING("CAMMODDIALOG");
                 ogame->GetCameraAI()->SetMode(mode, targetList);
-                log->Info("Dialog camera activated. Source " + GetVobString(source) + " Target " + GetVobString(target));
+                log->Info("Dialog camera activated. Mode: {0} Source - {1} Target - {2}", zMulCamera.GetMode(),  GetVobString(source).ToChar() ,GetVobString(target).ToChar());
                 return TRUE;
             }
             log->Warning("Source or target is not set.");
@@ -141,6 +141,22 @@ namespace GOTHIC_NAMESPACE {
             zMultilogue.Finish();
         }
         (this->*Ivk_oCInformationManager_CollectInfos)();
+    }
+
+    // AI_Output
+    // G1:  int __cdecl sub_6558F0()
+    // G2A: int __cdecl sub_6E9F30()
+    void __fastcall sub_6E9F30_PartialHook(Union::Registers& reg);
+    auto Partial_sub_6E9F30 = Union::CreatePartialHook(reinterpret_cast<void*>(zSwitch(0x006558F0, 0x006E9F30)), &sub_6E9F30_PartialHook);
+    void __fastcall sub_6E9F30_PartialHook(Union::Registers& reg)
+    {
+        if (zMultilogue.GetAutoMode())
+        {
+            // Call custom AI_Output function
+            zMultilogue.AI_Output();
+            // Skip original code
+            reg.eip = zSwitch(0x00655B44, 0x006EA1BB); //endp
+        }
     }
     
 }
