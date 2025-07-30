@@ -1,0 +1,4 @@
+mkdocs
+mkdocs-material
+mkdocs-awesome-pages-plugin==2.9.2
+git+https://github.com/kamilkrzyskow/gothic-lexer.git

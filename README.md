@@ -8,7 +8,7 @@ zMultilogue is a plugin that implements Multi-NPC dialog system for Gothic 1 and
 * Advanced camera manipulation system
 
 ## Documentation
-Documentation of a project is provided as a [GitHub wiki](https://github.com/Silver-Ore-Team/zMultilogue/wiki).
+Documentation of a project is provided as a [GitHub Pages Site](https://silver-ore-team.github.io/zMultilogue/).
 
 ## Support
 
