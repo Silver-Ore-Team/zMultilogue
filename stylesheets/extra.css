@@ -1,0 +1,20 @@
+[data-md-color-scheme="slate"] {
+    --md-primary-fg-color: #830404;
+    --md-typeset-a-color: rgb(255, 143, 143);
+}
+
+.md-main__inner.md-grid {
+    /* Default 61rem */
+    max-width: 70rem;
+}
+
+.md-grid {
+    /* Default 61rem */
+    max-width: 45rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-md-color-scheme="slate"] {
+        --md-code-bg-color: hsla(var(--md-hue), 15%, 7%, 1);
+    }
+}
