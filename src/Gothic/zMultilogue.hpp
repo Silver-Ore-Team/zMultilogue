@@ -10,6 +10,8 @@ namespace GOTHIC_NAMESPACE
         std::unordered_map<int, oCNpc*> m_Npcs;
         bool m_Running = false;
         bool m_AutoTurn = false;
+        bool m_AutoMode = false;
+        bool m_AutoCam = false;
     public:
         void AddNpc(oCNpc* npc);
         void Start();
@@ -24,6 +26,10 @@ namespace GOTHIC_NAMESPACE
         void Reset();
         void SetAutoTurn(bool autoTurn) { m_AutoTurn = autoTurn; }
         oCNpc* GetLastSelf() const { return m_LastSelf; }
+        void AI_Output();
+        void SetAutoMode(bool AutoMode) { m_AutoMode = AutoMode; }
+        bool GetAutoMode() const { return m_AutoMode; }
+        void SetAutoCam(bool AutoCam) { m_AutoCam = AutoCam; }
     };
 
     static zCMultilogue zMultilogue = zCMultilogue{}; // Global instance
@@ -60,13 +66,15 @@ namespace GOTHIC_NAMESPACE
             log->Warning("Multilogue already running.");
             return;
         }
-        m_AutoTurn = false;
+        if (!m_AutoMode) {
+            m_AutoTurn = false;
+        }
         m_LastSelf = GetDialogOwner();
         AddNpc(player);
         AddNpc(m_LastSelf);
         m_Running = true;
         Wait(m_LastSelf);
-        log->Info("Starting multilogue with {0} NPCs.", m_Npcs.size());
+        log->Info("Starting {0}multilogue with {1} NPCs.", m_AutoMode ? "automatic " : "", m_Npcs.size());
         ListNpcs();
     }
 
@@ -95,6 +103,7 @@ namespace GOTHIC_NAMESPACE
         oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
         msg->slot = "EV_FINISH";
         player->GetEM()->OnMessage(msg, player);
+        m_AutoMode = false;
     }
 
 
@@ -193,7 +202,7 @@ namespace GOTHIC_NAMESPACE
         }
         Wait(npc);
         // Self and player will turn to each other if m_AutoTurn is enabled
-        if (m_AutoTurn) {
+        if (m_AutoTurn && !m_AutoMode) {
             m_LastSelf->GetEM()->OnMessage(new oCMsgMovement(oCMsgMovement::EV_TURNTOVOB, player), m_LastSelf);
             player->GetEM()->OnMessage(new oCMsgMovement(oCMsgMovement::EV_TURNTOVOB, m_LastSelf), player);
         }
@@ -220,6 +229,54 @@ namespace GOTHIC_NAMESPACE
         m_LastSelf = nullptr;
         m_Npcs.clear();
         m_Running = false;
+        m_AutoTurn = false;
+        m_AutoMode = false;
+        m_AutoCam = false;
     }
+
+    inline void zCMultilogue::AI_Output()
+    {
+        zCParser* par = zCParser::GetParser();
+        zSTRING name;
+	    par->GetParameter(name);
+        oCNpc* target = reinterpret_cast<oCNpc*>(par->GetInstance());
+        oCNpc* talker = reinterpret_cast<oCNpc*>(par->GetInstance());
+        if (target && talker) {
+            if (!IsNpcInMultilogue(talker)) {
+                AddNpc(talker);
+            }
+            if (!IsNpcInMultilogue(target)) {
+                AddNpc(target);
+            }
+            if (!IsRunning()) {
+                Start();
+            }
+            if (talker != player) {
+                MakeSelf(talker);
+            }
+            if (m_AutoCam) {
+                if (zMulCamera.GetMode() != zCMultilogueCamera::Mode::FULL) {
+                    zMulCamera.SetModeInstant(zCMultilogueCamera::Mode::FULL);
+                }
+                zMulCamera.SetTarget(talker);
+                zMulCamera.SetSource(target);
+                zMulCamera.CameraEvent();
+            }
+            if (m_AutoTurn) {
+                talker->GetEM()->OnMessage(new oCMsgMovement(oCMsgMovement::EV_TURNTOVOB, target), talker);
+                target->GetEM()->OnMessage(new oCMsgMovement(oCMsgMovement::EV_TURNTOVOB, talker), target);
+            }
+            Wait(talker);
+            oCMsgConversation* msg = new oCMsgConversation(oCMsgConversation::EV_OUTPUT, name);
+            if (talker != player) {
+                msg->target = player;
+            }
+            else {
+                msg->target = target;
+            }
+            talker->GetEM()->OnMessage(msg, talker);
+            Wait(talker);
+        }
+    };
 
 }

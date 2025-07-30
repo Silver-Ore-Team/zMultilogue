@@ -21,6 +21,7 @@ namespace GOTHIC_NAMESPACE {
         void SetTarget(zCVob* target);
         void SetSource(zCVob* source);
         void SetMode(Mode mode);
+        void SetModeInstant(Mode mode);
         void CameraEvent();
         void EV_SetTarget(zCVob* target);
         void EV_SetSource(zCVob* source);
@@ -38,6 +39,13 @@ namespace GOTHIC_NAMESPACE {
         player->GetEM()->OnMessage(msg, player);
     }
 
+    inline void zCMultilogueCamera::SetModeInstant(Mode mode)
+    {
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::SetModeInstant");
+        m_Mode = mode;
+        log->Debug("Mode set to {0}", (int)mode);
+    }
+        
     inline void zCMultilogueCamera::EV_SetMode(Mode mode)
     {
         static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::EV_SetMode");
@@ -45,7 +53,6 @@ namespace GOTHIC_NAMESPACE {
         log->Debug("Mode set to {0}", (int)mode);
     }
         
-
     inline void zCMultilogueCamera::SetSource(zCVob* source)
     {
         static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::SetSource");

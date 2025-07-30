@@ -4,36 +4,54 @@
 //
 // =========================================================
 
-/// Invites Npc to the Multilogue
+/// Invites NPC to the multilog.
 ///
-/// @param slf Npc to invite
-func void zMul_Invite(var C_NPC slf) {};
+/// @param npc NPC to invite
+func void zMul_Invite(var C_NPC npc) {};
 
-/// Starts the Multilogue
+/// Starts the multilog.
 func void zMul_Start() {};
 
-/// Changes talking NPC
+/// Changes talking NPC (must be invited first).
+/// TIP: When adding choices to the dialog, `self` is automatically set to the dialog owner, so you don't need to call this function before `Info_AddChoice()`.
 ///
-/// @param slf Next talking NPC
-func void zMul_Next(var C_NPC slf) {};
+/// @global self will be set to the given NPC
+/// @param npc Next talking NPC
+func void zMul_Next(var C_NPC npc) {};
 
-/// Finishes the Multilogue
+/// Finishes the multilog
+/// TIP: Since `v0.1.10`, when calling `AI_StopProcessInfos()` there is no need to call `zMul_Finish()`.
 func void zMul_Finish() {};
 
-/// Makes invited NPC's wait for `slf` and each other
+/// Makes invited NPC's wait for `npc` and each other.
 ///
-/// @param slf NPC to wait for
-func void zMul_Wait(var C_NPC slf) {};
+/// @param npc NPC to wait for
+func void zMul_Wait(var C_NPC npc)  {};
 
-/// Enables/disables auto-turning of the NPCs
-/// `talker`->`hero` and `hero`->`talker`
-/// @param autoTurn `1` = enabled, `0` = disabled
-func void zMul_AutoTurn(var int autoTurn) {};
-
-/// Continues the Multilogue to the next dialog choice
-/// Call it instead of `zMul_Finish` if you want to continue the dialog
-/// Must be called before `Info_AddChoice`
+/// [deprecated] Continues the multilog to the next dialog choice.
+/// Must be called before `Info_AddChoice`.
 func void zMul_Continue() {};
+
+/// Enables/disables automatic multilog mode, camera and NPC turning.
+///
+/// @param TRUE to enable, FALSE to disable
+func void zMul_Auto(var int enable) {};
+
+/// Enables/disables automatic multilog mode.
+///
+/// @param TRUE to enable, FALSE to disable
+func void zMul_AutoMode(var int enable) {};
+
+/// Enables/disables automatic NPC turning. 
+/// NOTE: When enabled in manual mode, self and hero will be turning to each other.
+///
+/// @param TRUE to enable, FALSE to disable
+func void zMul_AutoTurn(var int enable) {};
+
+/// Enables/disables automatic camera.
+///
+/// @param TRUE to enable, FALSE to disable
+func void zMul_AutoCam(var int enable) {};
 
 // =========================================================
 //

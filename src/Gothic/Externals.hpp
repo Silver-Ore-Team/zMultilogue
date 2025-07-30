@@ -147,23 +147,56 @@ namespace GOTHIC_NAMESPACE {
         return 0;
     }
 
+    int zMul_Auto()
+    {
+        zCParser* par = zCParser::GetParser();
+        int autoMode;
+        par->GetParameter(autoMode);
+        zMultilogue.SetAutoMode(autoMode != 0);
+        zMultilogue.SetAutoTurn(autoMode != 0);
+        zMultilogue.SetAutoCam(autoMode != 0);
+        return 0;
+    }
+
+    int zMul_AutoMode()
+    {
+        zCParser* par = zCParser::GetParser();
+        int autoMode;
+        par->GetParameter(autoMode);
+        zMultilogue.SetAutoMode(autoMode != 0);
+        return 0;
+    }
+
+    int zMul_AutoCam()
+    {
+        zCParser* par = zCParser::GetParser();
+        int autoCam;
+        par->GetParameter(autoCam);
+        zMultilogue.SetAutoCam(autoCam != 0);
+        return 0;
+    }
+
     void DefineExternals()
     {
-        parser->DefineExternal("ZMul_Invite", zMul_Invite, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMul_Start", zMul_Start, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMul_Finish", zMul_Finish, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMul_Next", zMul_Next, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMul_Wait", zMul_Wait, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMul_AutoTurn", zMul_AutoTurn, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMul_Continue", zMul_Continue, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_Invite", zMul_Invite, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_Start", zMul_Start, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_Finish", zMul_Finish, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_Next", zMul_Next, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_Wait", zMul_Wait, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_Continue", zMul_Continue, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+
+        parser->DefineExternal("zMul_Auto", zMul_Auto, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_AutoMode", zMul_AutoMode, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_AutoTurn", zMul_AutoTurn, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMul_AutoCam", zMul_AutoCam, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
         
-        parser->DefineExternal("ZMulCam_SetNpcs", zMulCam_SetNpcs, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMulCam_SetTargetNpc", zMulCam_SetTargetNpc, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMulCam_SetSourceNpc", zMulCam_SetSourceNpc, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMulCam_SetTargetVob", zMulCam_SetTargetVob, zPAR_TYPE_VOID, zPAR_TYPE_STRING, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMulCam_SetSourceVob", zMulCam_SetSourceVob, zPAR_TYPE_VOID, zPAR_TYPE_STRING, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMulCam_SetMode", zMulCam_SetMode, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMulCam_Event", zMulCam_Event, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
-        parser->DefineExternal("ZMulCam_Reset", zMulCam_Reset, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMulCam_SetNpcs", zMulCam_SetNpcs, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMulCam_SetTargetNpc", zMulCam_SetTargetNpc, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMulCam_SetSourceNpc", zMulCam_SetSourceNpc, zPAR_TYPE_VOID, zPAR_TYPE_INSTANCE, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMulCam_SetTargetVob", zMulCam_SetTargetVob, zPAR_TYPE_VOID, zPAR_TYPE_STRING, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMulCam_SetSourceVob", zMulCam_SetSourceVob, zPAR_TYPE_VOID, zPAR_TYPE_STRING, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMulCam_SetMode", zMulCam_SetMode, zPAR_TYPE_VOID, zPAR_TYPE_INT, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMulCam_Event", zMulCam_Event, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
+        parser->DefineExternal("zMulCam_Reset", zMulCam_Reset, zPAR_TYPE_VOID, zPAR_TYPE_VOID);
     }
 }
