@@ -415,3 +415,15 @@ out
 .idea
 !/bin
 !docs/**/release
+
+# Python virtual environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code settings
+.vscode/
