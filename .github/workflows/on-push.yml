@@ -3,11 +3,16 @@ permissions: write-all
 on:
   pull_request:
     branches: [ "main"]
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - '.github/workflows/mkdocs.yml'
   push:
     branches: [ "main", "ci"]
     paths-ignore:
       - 'README.md'
       - 'docs/**'
+      - '.github/workflows/mkdocs.yml'
 jobs:
   build-release:
     name: Build Release

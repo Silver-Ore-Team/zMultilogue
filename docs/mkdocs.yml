@@ -1,0 +1,65 @@
+site_name: zMultilogue
+copyright: Copyright &copy; 2025 Silver Ore Team
+repo_url: https://github.com/Silver-Ore-Team/zMultilogue
+repo_name: zMultilogue
+
+theme:
+  name: material
+  logo: images/logo.svg
+  favicon: images/logo.svg
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    scheme: slate
+    primary: custom
+  font:
+    code: JetBrains Mono
+  highlightjs: true
+  hljs_languages:
+    - cpp
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tabs
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    - navigation.indexes
+    - navigation.top
+    - navigation.expand
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - footnotes
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search
+  - awesome-pages
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Silver-Ore-Team
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/SJfHUv5SRW
+extra_css:
+  - stylesheets/extra.css
