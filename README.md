@@ -1,25 +1,14 @@
 # zMultilogue
-zMultilogue is a Multi-NPC dialogue system for Gothic 1 and Gothic 2 NotR, based on the solution form [AFSP Trialogue package](https://github.com/Bad-Scientists/AF-Script-Packet/blob/main/Standalone-Packages/G12-Trialogue/trialogue.d).
-Its goal is to replace Trialoue packages based on [Ikarus](https://github.com/Lehona/Ikarus) and [LeGo](https://github.com/Lehona/LeGo/tree/dev) with an union-based plugin.
+zMultilogue is a plugin that implements Multi-NPC dialog system for Gothic 1 and Gothic 2 NotR. Its working principle is based on the solution from [AFSP Trialogue package](https://github.com/Bad-Scientists/AF-Script-Packet/blob/main/Standalone-Packages/G12-Trialogue/trialogue.d). The main project goal is to replace Trialog packages based on [Ikarus](https://github.com/Lehona/Ikarus) and [LeGo](https://github.com/Lehona/LeGo/tree/dev) with an union-based plugin.
 
 ## Features
-- System for creating dialogues with multiple NPCs that doesn't fuck up AI queue
-- Script interface based on the LeGo [Trialogue package](https://github.com/Lehona/LeGo/blob/dev/Trialoge.d) (easy to port dialogues)
-- Automatic increasing of dialog-box display distance if NPC is too far
-
-## ToDo
-
-- [x] Implement the basic functionality of the multilogue system
-- [x] Increase the default display dialogue distance if needed
-- [x] Advanced camera system
-- [x] Gothic 1 compatibility
+* System for creating dialogues with multiple NPCs that doesn't fuck up AI queue
+* Manual script interface based on the [LeGo Trialoge package](https://github.com/Lehona/LeGo/blob/dev/Trialoge.d)
+* Auto script interface for that makes writing multilogs as easy as normal dialogs
+* Advanced camera manipulation system
 
 ## Documentation
-Documentation of a project is provided as a GitHub wiki.
-
-- [Home](https://github.com/Silver-Ore-Team/zMultilogue/wiki)
-    - [Getting Started](https://github.com/Silver-Ore-Team/zMultilogue/wiki/Getting-Started)
-    - [Script Interface](https://github.com/Silver-Ore-Team/zMultilogue/wiki/Script-Interface)
+Documentation of a project is provided as a [GitHub wiki](https://github.com/Silver-Ore-Team/zMultilogue/wiki).
 
 ## Support
 
