@@ -31,7 +31,7 @@ namespace GOTHIC_NAMESPACE
 
     inline void zCMultilogue::AddNpc(oCNpc* npc)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::AddNpc");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogue::AddNpc");
         if (!npc) {
             log->Warning("Invalid NPC");
             return;
@@ -55,7 +55,7 @@ namespace GOTHIC_NAMESPACE
 
     inline void zCMultilogue::Start()
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::Start");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogue::Start");
         if (m_Running) {
             log->Warning("Multilogue already running.");
             return;
@@ -72,7 +72,7 @@ namespace GOTHIC_NAMESPACE
 
     inline void zCMultilogue::Finish()
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::Finish");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogue::Finish");
         if (!m_Running) {
             log->Warning("Multilogue not Running.");
             return;
@@ -99,7 +99,7 @@ namespace GOTHIC_NAMESPACE
 
 
     inline void zCMultilogue::EV_Finish() {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Finish");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogue::EV_Finish");
         if (!m_Running) {
             log->Warning("Multilogue has already finished.");
             return;
@@ -123,7 +123,7 @@ namespace GOTHIC_NAMESPACE
 
 
     inline void zCMultilogue::ListNpcs() {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::ListNpcs");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogue::ListNpcs");
         std::string npcList = "Current NPCs: ";
         for (auto& [key, value] : m_Npcs) {
             npcList += std::to_string(key) + ", ";
@@ -136,7 +136,7 @@ namespace GOTHIC_NAMESPACE
     }
 
     inline void zCMultilogue::Wait(oCNpc* npc) {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::Wait");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogue::Wait");
         if (!npc) {
             log->Warning("Invalid NPC.");
             return;
@@ -164,7 +164,7 @@ namespace GOTHIC_NAMESPACE
     }
 
     inline void zCMultilogue::MakeSelf(oCNpc *npc) {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogue::MakeSelf");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogue::MakeSelf");
         if (!npc) {
             log->Warning("Invalid NPC.");
             return;
@@ -202,7 +202,7 @@ namespace GOTHIC_NAMESPACE
     inline void zCMultilogue::EV_Next(int id) {
         oCNpc* npc = m_Npcs.find(id)->second;
         if (npc) {
-            static NH::Logger* log = NH::CreateLogger("zCMultilogue::EV_Next");
+            static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogue::EV_Next");
             log->Info("Next NPC: {0}", id);
             npc->talkOther = nullptr;
 

@@ -25,7 +25,7 @@ namespace GOTHIC_NAMESPACE {
 
     inline void zCDialogDistanceController::SetDistance(float distance)
     {
-        static NH::Logger* log = NH::CreateLogger("zCDialogDistanceController::SetDistance");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCDialogDistanceController::SetDistance");
         GetDefaultDistance();
         newDiagDist = distance * distance;
         auto rawMem = ::Union::RawMemory::GetAccess(reinterpret_cast<void*>(m_Address), reinterpret_cast<void*>(m_Address + 0x4));

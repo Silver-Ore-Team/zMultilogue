@@ -89,7 +89,7 @@ namespace GOTHIC_NAMESPACE {
         zCVob* vob = world->SearchVobByName( vobName );
         if (!vob)
         {
-            static NH::Logger* log = NH::CreateLogger("zMulCam_SetTargetVob");
+            static NH::Logger* log = NH::CreateLogger("zMul::Externals::zMulCam_SetTargetVob");
             log->Warning("Vob not found: {0}", vobName.ToChar());
             return 0;
         }
@@ -106,7 +106,7 @@ namespace GOTHIC_NAMESPACE {
         oCWorld* world = ogame->GetGameWorld();
         zCVob* vob = world->SearchVobByName( vobName );
         if (!vob) {
-            static NH::Logger* log = NH::CreateLogger("zMulCam_SetSourceVob");
+            static NH::Logger* log = NH::CreateLogger("zMul::Externals::zMulCam_SetSourceVob");
             log->Warning("Vob not found: {0}", vobName.ToChar());
             return 0;
         }
@@ -134,7 +134,7 @@ namespace GOTHIC_NAMESPACE {
 
     int zMul_Continue()
     {
-        static NH::Logger* log = NH::CreateLogger("zMul_Continue");
+        static NH::Logger* log = NH::CreateLogger("zMul::Externals::zMul_Continue");
         log->Warning("This function is deprecated");
         // Leave for compatibility
         WaitForPlayerAI();

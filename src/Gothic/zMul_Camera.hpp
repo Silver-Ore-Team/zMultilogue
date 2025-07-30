@@ -40,7 +40,7 @@ namespace GOTHIC_NAMESPACE {
 
     inline void zCMultilogueCamera::EV_SetMode(Mode mode)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::EV_SetMode");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::EV_SetMode");
         m_Mode = mode;
         log->Debug("Mode set to {0}", (int)mode);
     }
@@ -48,7 +48,7 @@ namespace GOTHIC_NAMESPACE {
 
     inline void zCMultilogueCamera::SetSource(zCVob* source)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::SetSource");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::SetSource");
         if (!source) {
             log->Warning("Invalid source.");
             return;
@@ -61,7 +61,7 @@ namespace GOTHIC_NAMESPACE {
 
     inline void zCMultilogueCamera::SetTarget(zCVob* target)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::SetTarget");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::SetTarget");
         if (!target) {
             log->Warning("Invalid target.");
             return;
@@ -81,21 +81,21 @@ namespace GOTHIC_NAMESPACE {
 
     inline void zCMultilogueCamera::EV_SetSource(zCVob* source)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::EV_SetSource");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::EV_SetSource");
         m_Source = source;
         log->Debug("Source " + GetVobString(source));
     }
 
     inline void zCMultilogueCamera::EV_SetTarget(zCVob* target)
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::EV_SetTarget");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::EV_SetTarget");
         m_Target = target;
         log->Debug("Target " + GetVobString(target));
     }
 
     inline void zCMultilogueCamera::EV_CameraEvent()
     {
-        static NH::Logger* log = NH::CreateLogger("zCMultilogueCamera::EV_CameraEvent");
+        static NH::Logger* log = NH::CreateLogger("zMul::zCMultilogueCamera::EV_CameraEvent");
         if (m_Mode != Mode::FULL) {
             return;
         }
