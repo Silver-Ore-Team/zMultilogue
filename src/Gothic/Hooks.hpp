@@ -129,4 +129,18 @@ namespace GOTHIC_NAMESPACE {
             }
         }
     }
+
+    // G1:  0x0072CD90 protected: void __fastcall oCInformationManager::CollectInfos(void)
+    // G2A: 0x00661AA0 protected: void __fastcall oCInformationManager::CollectInfos(void)
+    auto Ivk_oCInformationManager_CollectInfos = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x0072CD90, 0x00661AA0)), &oCInformationManager::CollectInfos_Hook);
+    void oCInformationManager::CollectInfos_Hook(void)
+    {
+        // Finish multilogue when information manager is collecting new infos
+        if (zMultilogue.IsRunning())
+        {
+            zMultilogue.Finish();
+        }
+        (this->*Ivk_oCInformationManager_CollectInfos)();
+    }
+    
 }
