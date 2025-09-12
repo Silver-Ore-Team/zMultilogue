@@ -79,12 +79,26 @@ namespace NH
 
         switch (GetGameVersion())
         {
+#ifdef __G1
         case Engine_G1:
             Gothic_I_Classic::zerr->Message(Gothic_I_Classic::zSTRING(formattedMessage.ToChar()));
             break;
+#endif
+#ifdef __G1A
+        case Engine_G1A:
+            Gothic_I_Addon::zerr->Message(Gothic_I_Addon::zSTRING(formattedMessage.ToChar()));
+            break;
+#endif
+#ifdef __G2
+        case Engine_G2:
+            Gothic_II_Classic::zerr->Message(Gothic_II_Classic::zSTRING(formattedMessage.ToChar()));
+            break;
+#endif
+#ifdef __G2A
         case Engine_G2A:
             Gothic_II_Addon::zerr->Message(Gothic_II_Addon::zSTRING(formattedMessage.ToChar()));
             break;
+#endif
         }
     }
 
