@@ -1,5 +1,5 @@
 # zMultilogue
-zMultilogue is a plugin that implements Multi-NPC dialog system for Gothic 1 and Gothic 2 NotR. Its working principle is based on the solution from [AFSP Trialogue package](https://github.com/Bad-Scientists/AF-Script-Packet/blob/main/Standalone-Packages/G12-Trialogue/trialogue.d). The main project goal is to replace Trialog packages based on [Ikarus](https://github.com/Lehona/Ikarus) and [LeGo](https://github.com/Lehona/LeGo/tree/dev) with an union-based plugin.
+zMultilogue is a plugin that implements Multi-NPC dialog system for Gothic 1 and Gothic 2 NotR. Its working principle is based on the solution from [AFSP Trialogue package](https://github.com/Bad-Scientists/AF-Script-Packet/blob/main/Standalone-Packages/G12-Trialogue/trialogue.d). The main project goal is to replace Trialog packages based on [Ikarus](https://github.com/Lehona/Ikarus) and [LeGo](https://github.com/Lehona/LeGo) with an union-based plugin.
 
 ## Features
 * System for creating dialogs with multiple NPCs that doesn't fuck up AI queue
@@ -23,4 +23,4 @@ Below you can find the contributors to the project:
 
 [^1]: zMultilogue depends on [union-api](https://gitlab.com/union-framework/union-api)
 and [gothic-api](https://gitlab.com/union-framework/gothic-api) libraries, which are
-licensed under [BSD 3-Clause "New" or "Revised" License](https://gitlab.com/union-framework/union-api/-/blob/main/LICENSE)
+licensed under [BSD 3-Clause "New" or "Revised" License](https://gitlab.com/union-framework/union-api/-/blob/main/LICENSE) and GothicVDFS 2.6 [Copyright (c) 2001-2003, Nico Bendlin, Copyright (c) 1994-2002, Peter Sabath / TRIACOM Software GmbH](https://github.com/Silver-Ore-Team/zMultilogue/blob/main/vdf/License.txt)
