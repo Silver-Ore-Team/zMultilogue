@@ -30,6 +30,10 @@ namespace GOTHIC_NAMESPACE {
                 zMulCamera.EV_CameraEvent();
                 return TRUE;
             }
+            if (msgSlot.Upper() == "EV_CAMRESET") {
+                zMulCamera.EV_Reset();
+                return TRUE;
+            }
         }
         return (this->*Ivk_oCNpc_EV_Exchange)(msg);
     }

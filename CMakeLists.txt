@@ -13,7 +13,7 @@ set(GOTHIC_API_G2A ON)
 FetchContent_Declare(
         union-api
         GIT_REPOSITORY https://gitlab.com/union-framework/union-api.git
-        GIT_TAG        39248582941118f9fb8c44b7d974292a0ad39c2c
+        GIT_TAG        010525058d15cd4ec077f7eaf923506320ff6a89
 )
 FetchContent_Declare(
         gothic-api

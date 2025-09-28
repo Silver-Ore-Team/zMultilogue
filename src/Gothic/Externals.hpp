@@ -143,7 +143,7 @@ namespace GOTHIC_NAMESPACE {
 
     int zMulCam_Reset()
     {
-        zMulCamera.Reset();
+        zMulCamera.ResetAI();
         return 0;
     }
 
