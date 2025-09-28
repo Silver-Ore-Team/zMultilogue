@@ -84,7 +84,7 @@ func void zMulCam_Event() {};
 
 ---
 ### `zMulCam_Reset`
-Resets the camera to the default state instantly
+Resets the camera to the default state
 ```dae
 func void zMulCam_Reset() {};
 ```

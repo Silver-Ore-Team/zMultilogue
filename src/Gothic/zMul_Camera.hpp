@@ -18,6 +18,7 @@ namespace GOTHIC_NAMESPACE {
         zCVob* GetSource() const { return m_Source; }
         Mode GetMode() const { return m_Mode; }
         void Reset() {m_Target = nullptr; m_Source = nullptr; m_Mode = Mode::DEFAULT;}
+        void ResetAI();
         void SetTarget(zCVob* target);
         void SetSource(zCVob* source);
         void SetMode(Mode mode);
@@ -27,6 +28,7 @@ namespace GOTHIC_NAMESPACE {
         void EV_SetSource(zCVob* source);
         void EV_SetMode(Mode mode);
         void EV_CameraEvent();
+        void EV_Reset() { Reset(); }
     };
 
     static zCMultilogueCamera zMulCamera {};
@@ -116,4 +118,12 @@ namespace GOTHIC_NAMESPACE {
         }
         player->ActivateDialogCam_Hook(0.0f);
     }
+
+    inline void zCMultilogueCamera::ResetAI()
+    {
+        oCMsgManipulate* msg = new oCMsgManipulate( oCMsgManipulate::EV_EXCHANGE);
+        msg->slot = "EV_CAMRESET";
+        player->GetEM()->OnMessage(msg, player);
+    }
+        
 }
