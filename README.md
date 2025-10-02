@@ -2,13 +2,13 @@
 zMultilogue is a plugin that implements Multi-NPC dialog system for Gothic 1 and Gothic 2 NotR. Its working principle is based on the solution from [AFSP Trialogue package](https://github.com/Bad-Scientists/AF-Script-Packet/blob/main/Standalone-Packages/G12-Trialogue/trialogue.d). The main project goal is to replace Trialog packages based on [Ikarus](https://github.com/Lehona/Ikarus) and [LeGo](https://github.com/Lehona/LeGo) with an union-based plugin.
 
 ## Features
-* System for creating dialogs with multiple NPCs that doesn't fuck up AI queue
+* System for creating dialogs with multiple NPCs without breaking the AI queue
 * Manual script interface based on the [LeGo Trialoge package](https://github.com/Lehona/LeGo/blob/dev/Trialoge.d)
 * Auto script interface that makes writing multilogs as easy as normal dialogs
 * Advanced camera manipulation system
 
 ## Documentation
-Documentation of a project is provided as a [GitHub Pages Site](https://silver-ore-team.github.io/zMultilogue/).
+Documentation of the plugin is hosted on [GitHub Pages](https://silver-ore-team.github.io/zMultilogue/).
 
 ## Support
 
